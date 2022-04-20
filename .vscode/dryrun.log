@@ -1,0 +1,11 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory `/Users/okinnune/Fractol'
+echo "Compiling for platform: Darwin."
+/Applications/Xcode.app/Contents/Developer/usr/bin/make fractol
+ 
+make[1]: Entering directory `/Users/okinnune/Fractol'
+make[1]: `fractol' is up to date.
+make[1]: Leaving directory `/Users/okinnune/Fractol'
+ 
+make: Leaving directory `/Users/okinnune/Fractol'
+ 
