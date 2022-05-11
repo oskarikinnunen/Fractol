@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 17:57:33 by okinnune          #+#    #+#             */
-/*   Updated: 2022/04/20 17:06:30 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/05 14:28:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ int				ft_max(int i1, int i2);
 float			ft_minf(float f1, float f2);
 float			ft_maxf(float f1, float f2);
 float			ft_clampf(float val, float min, float max);
+float			ft_lerpf(float f1, float f2, float lerp);
 
 /* lists */
 typedef struct s_list

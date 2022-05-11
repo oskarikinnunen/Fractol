@@ -6,17 +6,17 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 12:28:43 by okinnune          #+#    #+#              #
-#    Updated: 2022/04/20 15:21:53 by okinnune         ###   ########.fr        #
+#    Updated: 2022/05/11 09:47:09 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fractol
 
-SRCS = main.c
+SRCS = main.c threading.c
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
 CC = gcc -Ilibft
-
+CFLAGS = -pthread -O3
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
 MLXFLAGS = libmlx.dylib
@@ -50,8 +50,8 @@ mlx/Linux/libmlx.a:
 
 clean	:
 	make -C libft clean
-	make -C mlx/OS_X clean
-	make -C mlx/Linux clean
+	#make -C mlx/OS_X clean
+	#make -C mlx/Linux clean
 	rm -f $(OBJS) *~ core *.core
 
 fclean	: clean
