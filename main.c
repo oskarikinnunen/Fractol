@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 13:52:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 14:15:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,12 @@ static int	loop(void *p)
 	t_mlx_info			*info;
 
 	info = (t_mlx_info *)p;
+	printf("zoom %Lf\n", info->zoom);
+	if (info->zoom >= 200)
+			printf("exceeded 2x zoom level!");
+	
 	//ft_bzero(info->img->addr, WSZ * WSZ * sizeof(int));
 	//fill_mandelbrot(*info);
-	printf("diff from og zoom %Lf", (100.0 - info->zoom));
 	mt_draw(*info);
 	//printf("mandelbrot done ?\n");
 	mlx_put_image_to_window(info->mlx, info->win, info->img->ptr, 0, 0);
@@ -82,6 +85,8 @@ int	mouse_hook(int button, int x, int y, void *p)
 	if (button == SCRL_UP) {
 		i->zoom = i->zoom * 1.1;
 		
+		if (i->zoom >= 200)
+			printf("exceeded 2x zoom level!");
 	}
 		
 	if (button == 1)

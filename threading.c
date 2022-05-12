@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 13:57:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 14:09:53 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	populate_threadinfo(t_mlx_info *info)
 	int	image_length;
 
 	image_length = WSZ * WSZ;
-	info->thread_count = (int)sysconf(_SC_NPROCESSORS_ONLN);
+	info->thread_count = (int)sysconf(_SC_NPROCESSORS_ONLN) * 2;
 	printf("thread count %i \n", info->thread_count);
 	if (info->thread_count > 0)
 	{
@@ -33,7 +33,7 @@ void	populate_threadinfo(t_mlx_info *info)
 		info->t_args[t_i].endpixel = (t_i + 1) * (image_length / info->thread_count);
 		printf("targ %i start %i end %i \n", t_i, info->t_args[t_i].startpixel, info->t_args[t_i].endpixel);
 		info->t_args[t_i].img = info->img;
-		info->t_args[t_i].zoom = info->zoom; //TODO: update in loop
+		info->t_args[t_i].zoom = info->zoom;
 		ft_memcpy(info->t_args[t_i].pos, info->pos, sizeof (long double [2]));
 		t_i++;
 	}
