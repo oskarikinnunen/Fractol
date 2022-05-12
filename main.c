@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/11 10:06:56 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:20:10 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,31 +33,11 @@ int	get_pixel_color(float z)
 
 	
 	//printf("lerp test %f \n", ft_lerpf(100,50, 0.2));
+	
+	z = ft_clampf(z, 0, 3);
 	//printf("color1 %i color2 %i lerp %f \n", (int)z, (int)z + 1, z- (int)z);
 	lcolor = g_colorlerp(color[(int)z], color[((int)z) + 1], z- (int)z);
 	return (lcolor);
-}
-
-static int	mandelbrot(t_complex c)
-{
-	float			color;
-	t_complex	f;
-	t_complex	prev;
-
-	ft_bzero(&f, sizeof(t_complex));
-	color = 0;
-	while (ft_absd(f.real * f.real + f.imaginary * f.imaginary) < 4 && color < MAX_ITERS)
-	{
-		ft_memcpy(&prev, &f, sizeof(t_complex));
-		f.real = (f.real * f.real) - (f.imaginary * f.imaginary) + c.real;
-		f.imaginary = 2 * prev.real * prev.imaginary + c.imaginary;
-		color += 1.0;
-	}
-	color = color * (255 / MAX_ITERS);
-	color = color / 51.0;
-	//printf("z lerp %f \n", color);
-	//assert(color >= 0 && color <= 255);
-	return (get_pixel_color(color));
 }
 
 static int	loop(void *p)
@@ -101,12 +81,12 @@ int	mouse_hook(int button, int x, int y, void *p)
 	t_mlx_info		*i;
 
 	i = (t_mlx_info *)p;
-	printf("mouse button %i \n", button);
-	if (button == SCRL_UP)
-		i->zoom = i->zoom * 0.9;
+	//printf("mouse button %i \n", button);
 	if (button == SCRL_DOWN)
+		i->zoom = i->zoom * 0.9;
+	if (button == SCRL_UP)
 	{
-		printf("zoom %f \n", i->zoom);
+		//printf("zoom %f \n", i->zoom);
 		i->zoom = i->zoom * 1.1;
 	}
 		
@@ -114,8 +94,8 @@ int	mouse_hook(int button, int x, int y, void *p)
 	{
 		i->pos[X] += (x - (WSZ / 2)) / i->zoom;
 		i->pos[Y] += (y - (WSZ / 2)) / i->zoom;
-		printf("normalized mouse coord x %f \n", i->pos[X]);
-		printf("normalized mouse coord y %f \n", i->pos[Y]);
+		//printf("normalized mouse coord x %f \n", i->pos[X]);
+		//printf("normalized mouse coord y %f \n", i->pos[Y]);
 	}
 	update_t_args(*i);
 	return (1);
@@ -129,8 +109,8 @@ static void start_mlx(t_mlx_info *info, t_image_info *img)
 	img->addr = mlx_get_data_addr(img->ptr, (int *)&(img->bpp),
 			(int *)&(img->size_line), &(img->endian));
 	info->img = img;
-	info->zoom = 100;
-	ft_bzero(info->pos, sizeof(float [2]));
+	info->zoom = 100.0;
+	ft_bzero(info->pos, sizeof(long double [2]));
 	//info->pos[X] -= WSZ / 2;
 	//info->pos[Y] += WSZ / 2;
 	populate_threadinfo(info);
@@ -148,6 +128,7 @@ int	main(void)
 	t_image_info img;
 	t_mlx_info info;
 
+	t_hugefloat *hf = hf_new();
 	start_mlx(&info, &img);
 	while (1)
 		;

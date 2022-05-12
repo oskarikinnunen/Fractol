@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/11 10:16:06 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:16:22 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,12 @@ void	populate_threadinfo(t_mlx_info *info)
 		printf("targ %i start %i end %i \n", t_i, info->t_args[t_i].startpixel, info->t_args[t_i].endpixel);
 		info->t_args[t_i].img = info->img;
 		info->t_args[t_i].zoom = info->zoom; //TODO: update in loop
-		ft_memcpy(info->t_args[t_i].pos, info->pos, sizeof (int [2]));
+		ft_memcpy(info->t_args[t_i].pos, info->pos, sizeof (long double [2]));
 		t_i++;
 	}
 }
 
-float	g_color_add = 0.04;
+float	g_color_add = 0.05;
 
 static int	mandelbrot(t_complex c)
 {
@@ -59,42 +59,20 @@ static int	mandelbrot(t_complex c)
 	return (get_pixel_color(color));
 }
 
-/*static int	mandelbrot(t_complex c)
-{
-	float			color;
-	t_complex	f;
-	t_complex	prev;
-
-	ft_bzero(&f, sizeof(t_complex));
-	color = 0;
-	while (ft_absd(f.real * f.real + f.imaginary * f.imaginary) < 4 && color < MAX_ITERS)
-	{
-		ft_memcpy(&prev, &f, sizeof(t_complex));
-		f.real = (f.real * f.real) - (f.imaginary * f.imaginary) + c.real;
-		f.imaginary = 2 * prev.real * prev.imaginary + c.imaginary;
-		color += 0.04;
-	}
-	return (get_pixel_color(color));
-}*/
-
 #include <assert.h>
 
 static void	*fill_fractal_mt(void *v_arg)
 {
-	int				crd[2];
+	long double		crd[2];
 	int				pixelcount;
 	t_thread_arg	*arg;
 	t_complex		c;
 
 	arg = (t_thread_arg *)v_arg;
 	ft_bzero(&c, sizeof(t_complex));
-	ft_bzero(crd, sizeof(int [2]));
+	ft_bzero(crd, sizeof(long double [2]));
 	pixelcount = 0;
 	float g_scale = 0.1;
-	//return (NULL);
-	//printf("fill fractal!\n");
-	//crd[X] = arg->pos[X] - (WSZ / 2);
-	//crd[X] = arg->pos[Y] - (WSZ / 2);
 	while(crd[Y] < WSZ && pixelcount <= arg->endpixel)
 	{
 		while(crd[X] < WSZ && pixelcount <= arg->endpixel)
@@ -105,31 +83,18 @@ static void	*fill_fractal_mt(void *v_arg)
 				crd[X]++; //Fix for norminette, make more compact
 				continue;
 			}
-			//c.real = (crd[X]) * arg->zoom;
-			
-			c.real = (arg->pos[X] - ((WSZ / 2) / arg->zoom)) + (crd[X]  / arg->zoom);
-			c.imaginary = (arg->pos[Y] - ((WSZ / 2) / arg->zoom)) + (crd[Y]  / arg->zoom);
+			c.real = (arg->pos[X] - ((double)(WSZ / 2) / arg->zoom)) + (crd[X]  / arg->zoom);
+			c.imaginary = (arg->pos[Y] - ((double)(WSZ / 2) / arg->zoom)) + (crd[Y]  / arg->zoom);
 			c.real *= g_scale;
 			c.imaginary *= g_scale;
-			//c.real += (float)arg->pos[X] * arg->zoom;
-			
-			//
-			//c.real += (arg->pos[X]) * arg->zoom;
-			*(unsigned int *)(arg->img->addr + (crd[X] * sizeof(int)) + (crd[Y]
+			*(unsigned int *)(arg->img->addr + (((int)crd[X]) * sizeof(int)) + (((int)crd[Y])
 					* arg->img->size_line)) = mandelbrot(c);
-
-			if (crd[X] >= 0 && crd[X] <= 10)
-				*(unsigned int *)(arg->img->addr + (crd[X] * sizeof(int)) + (crd[Y]
-					* arg->img->size_line)) = INT_MAX;
-			//mandelbrot(c);
 			crd[X]++;
 		}
 		crd[X] = 0;
 		pixelcount++;
-		//printf("pc %i \n", pixelcount);
 		crd[Y]++;
 	}
-	
 	return (NULL);
 }
 
@@ -141,7 +106,7 @@ void	update_t_args(t_mlx_info info)
 	while (i < info.thread_count)
 	{
 		info.t_args[i].zoom = info.zoom;
-		ft_memcpy(info.t_args[i].pos, info.pos, sizeof(int [2]));
+		ft_memcpy(info.t_args[i].pos, info.pos, sizeof(long double [2]));
 		i++;
 	}
 }

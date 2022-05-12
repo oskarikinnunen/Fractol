@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/11 11:55:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:19:37 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,11 @@
 # define SCRL_DOWN 5
 # define SCRL_UP 4
 
+
 typedef struct s_complex
 {
-	unsigned long double	real;
-	unsigned long double	imaginary;
+	long double	real;
+	long double	imaginary;
 }	t_complex;
 
 typedef struct s_image_info
@@ -66,13 +67,14 @@ typedef struct s_image_info
 	int		endian;
 }	t_image_info;
 
+//Threads populate the fake image, which then gets sample with pos and zoom to the "real image"
 typedef struct s_thread_arg
 {
 	t_image_info	*img;
 	int				startpixel;
 	int				endpixel;
-	float			zoom;
-	float			pos[2];
+	long double		zoom;
+	long double 	pos[2];
 }	t_thread_arg;
 
 typedef struct s_hugefloat
@@ -89,13 +91,15 @@ typedef struct s_mlx_info
 	pthread_t			*threads;
 	t_thread_arg		*t_args;
 	int					thread_count;
-	float				pos[2]; // Convert to origin point coordinate
-	float				zoom;
+	long double			pos[2]; // Convert to origin point coordinate
+	long double			zoom;
 }	t_mlx_info;
 
-int		get_pixel_color(float z);
-void	populate_threadinfo(t_mlx_info *info);
-void	update_t_args(t_mlx_info info);
-void	mt_draw(t_mlx_info info);
+int			get_pixel_color(float z);
+void		populate_threadinfo(t_mlx_info *info);
+void		update_t_args(t_mlx_info info);
+void		mt_draw(t_mlx_info info);
+
+t_hugefloat	*hf_new();
 
 # endif

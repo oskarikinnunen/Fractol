@@ -6,17 +6,17 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 12:28:43 by okinnune          #+#    #+#              #
-#    Updated: 2022/05/11 09:47:09 by okinnune         ###   ########.fr        #
+#    Updated: 2022/05/12 12:57:17 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fractol
 
-SRCS = main.c threading.c
+SRCS = main.c threading.c bigfloat.c
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
 CC = gcc -Ilibft
-CFLAGS = -pthread -O3
+CFLAGS = -pthread -g #-fsanitize=address
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
 MLXFLAGS = libmlx.dylib
