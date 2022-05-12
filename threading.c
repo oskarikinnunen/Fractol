@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 13:16:22 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:57:49 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,10 @@ static void	*fill_fractal_mt(void *v_arg)
 	ft_bzero(crd, sizeof(long double [2]));
 	pixelcount = 0;
 	float g_scale = 0.1;
-	while(crd[Y] < WSZ && pixelcount <= arg->endpixel)
+	assert(arg->img->size[X] == WSZ && arg->img->size[Y] == WSZ);
+	while(crd[Y] < arg->img->size[Y] && pixelcount <= arg->endpixel)
 	{
-		while(crd[X] < WSZ && pixelcount <= arg->endpixel)
+		while(crd[X] < arg->img->size[X] && pixelcount <= arg->endpixel)
 		{
 			pixelcount++;
 			if (pixelcount < arg->startpixel)
@@ -129,5 +130,5 @@ void	mt_draw(t_mlx_info info)
 		pthread_join(info.threads[t_i], NULL);
 		t_i++;
 	}
-	//printf("join \n");
+	//printf("join \n")
 }

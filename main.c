@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 13:20:10 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:52:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int	loop(void *p)
 	info = (t_mlx_info *)p;
 	//ft_bzero(info->img->addr, WSZ * WSZ * sizeof(int));
 	//fill_mandelbrot(*info);
-
+	printf("diff from og zoom %Lf", (100.0 - info->zoom));
 	mt_draw(*info);
 	//printf("mandelbrot done ?\n");
 	mlx_put_image_to_window(info->mlx, info->win, info->img->ptr, 0, 0);
@@ -68,10 +68,6 @@ static int	key_loop(int keycode, void *p)
 		g_color_add *= 1.1;
 	if (keycode == KEY_X)
 		g_color_add *= 0.9;
-	i->pos[X] -= (keycode == KEY_LEFT) * 800000 * i->zoom;
-	i->pos[X] += (keycode == KEY_RGHT) * 800000 * i->zoom;
-	i->pos[Y] -= (keycode == KEY_UP) * 800000 * i->zoom;;
-	i->pos[Y] += (keycode == KEY_DOWN) * 800000 * i->zoom;
 	update_t_args(*i);
 	return (1);
 }
@@ -81,34 +77,33 @@ int	mouse_hook(int button, int x, int y, void *p)
 	t_mlx_info		*i;
 
 	i = (t_mlx_info *)p;
-	//printf("mouse button %i \n", button);
 	if (button == SCRL_DOWN)
 		i->zoom = i->zoom * 0.9;
-	if (button == SCRL_UP)
-	{
-		//printf("zoom %f \n", i->zoom);
+	if (button == SCRL_UP) {
 		i->zoom = i->zoom * 1.1;
+		
 	}
 		
 	if (button == 1)
 	{
 		i->pos[X] += (x - (WSZ / 2)) / i->zoom;
 		i->pos[Y] += (y - (WSZ / 2)) / i->zoom;
-		//printf("normalized mouse coord x %f \n", i->pos[X]);
-		//printf("normalized mouse coord y %f \n", i->pos[Y]);
 	}
 	update_t_args(*i);
 	return (1);
 }
 
-static void start_mlx(t_mlx_info *info, t_image_info *img)
+static void start_mlx(t_mlx_info *info)
 {
 	info->mlx = mlx_init();
 	info->win = mlx_new_window(info->mlx, WSZ, WSZ, "new_window");
-	img->ptr = mlx_new_image(info->mlx, WSZ, WSZ);
-	img->addr = mlx_get_data_addr(img->ptr, (int *)&(img->bpp),
-			(int *)&(img->size_line), &(img->endian));
-	info->img = img;
+	info->img->ptr = mlx_new_image(info->mlx, WSZ, WSZ);
+	info->img->addr = mlx_get_data_addr(info->img->ptr, (int *)&(info->img->bpp),
+			(int *)&(info->img->size_line), &(info->img->endian));
+	ft_memcpy(info->img->size, (int [2]) {WSZ, WSZ}, sizeof (int [2]));
+	ft_memcpy(&info->img[1], &info->img[0], sizeof(t_image_info));
+	ft_memcpy(info->img[1].size, (int [2]) {WSZ * 2, WSZ * 2}, sizeof (int [2]));
+	info->img[1].addr = ft_memalloc(info->img->size_line * WSZ);
 	info->zoom = 100.0;
 	ft_bzero(info->pos, sizeof(long double [2]));
 	//info->pos[X] -= WSZ / 2;
@@ -125,11 +120,11 @@ static void start_mlx(t_mlx_info *info, t_image_info *img)
 int	main(void)
 {
 	t_complex	c;
-	t_image_info img;
+	t_image_info img[2];
 	t_mlx_info info;
 
-	t_hugefloat *hf = hf_new();
-	start_mlx(&info, &img);
+	info.img = img;
+	start_mlx(&info);
 	while (1)
 		;
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 13:19:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 13:55:45 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <stdio.h>
 
 # define WSZ 1024
-# define MAX_ITERS 4
+# define MAX_ITERS 3
 # define X 0
 # define Y 1
 # define INT_MAX 2147483647
@@ -65,9 +65,13 @@ typedef struct s_image_info
 	int		bpp;
 	int		size_line;
 	int		endian;
+	int		size[2];
 }	t_image_info;
 
 //Threads populate the fake image, which then gets sample with pos and zoom to the "real image"
+
+//TODO: draw zoom image target on screen as a square, redraw the actual 2x image once we reach that
+//2 zoom variables, one for the actual mandelbrot zoom and one for the "digital" zoom that we do on the copy image
 typedef struct s_thread_arg
 {
 	t_image_info	*img;
@@ -91,7 +95,7 @@ typedef struct s_mlx_info
 	pthread_t			*threads;
 	t_thread_arg		*t_args;
 	int					thread_count;
-	long double			pos[2]; // Convert to origin point coordinate
+	long double			pos[2];
 	long double			zoom;
 }	t_mlx_info;
 
