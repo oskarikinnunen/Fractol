@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 13:55:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 17:45:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,15 @@ typedef struct s_mlx_info
 	int					thread_count;
 	long double			pos[2];
 	long double			zoom;
+	long double			target_zoom;
+	float				img_zoom;
 }	t_mlx_info;
 
 int			get_pixel_color(float z);
 void		populate_threadinfo(t_mlx_info *info);
 void		update_t_args(t_mlx_info info);
 void		mt_draw(t_mlx_info info);
+void		sample_image(t_mlx_info *info);
 
 t_hugefloat	*hf_new();
 

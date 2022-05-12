@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 14:09:53 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 18:06:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	populate_threadinfo(t_mlx_info *info)
 	int	t_i;
 	int	image_length;
 
-	image_length = WSZ * WSZ;
+	image_length = WSZ * WSZ * 2;
 	info->thread_count = (int)sysconf(_SC_NPROCESSORS_ONLN) * 2;
 	printf("thread count %i \n", info->thread_count);
 	if (info->thread_count > 0)
@@ -32,7 +32,7 @@ void	populate_threadinfo(t_mlx_info *info)
 		info->t_args[t_i].startpixel = t_i * (image_length / info->thread_count);
 		info->t_args[t_i].endpixel = (t_i + 1) * (image_length / info->thread_count);
 		printf("targ %i start %i end %i \n", t_i, info->t_args[t_i].startpixel, info->t_args[t_i].endpixel);
-		info->t_args[t_i].img = info->img;
+		info->t_args[t_i].img = &info->img[1];
 		info->t_args[t_i].zoom = info->zoom;
 		ft_memcpy(info->t_args[t_i].pos, info->pos, sizeof (long double [2]));
 		t_i++;
@@ -73,7 +73,7 @@ static void	*fill_fractal_mt(void *v_arg)
 	ft_bzero(crd, sizeof(long double [2]));
 	pixelcount = 0;
 	float g_scale = 0.1;
-	assert(arg->img->size[X] == WSZ && arg->img->size[Y] == WSZ);
+	//assert(arg->img->size[X] == WSZ && arg->img->size[Y] == WSZ);
 	while(crd[Y] < arg->img->size[Y] && pixelcount <= arg->endpixel)
 	{
 		while(crd[X] < arg->img->size[X] && pixelcount <= arg->endpixel)
@@ -96,6 +96,7 @@ static void	*fill_fractal_mt(void *v_arg)
 		pixelcount++;
 		crd[Y]++;
 	}
+	printf("finished mt \n");
 	return (NULL);
 }
 

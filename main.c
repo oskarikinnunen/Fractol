@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 14:15:45 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/12 18:05:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,18 @@ static int	loop(void *p)
 	t_mlx_info			*info;
 
 	info = (t_mlx_info *)p;
-	printf("zoom %Lf\n", info->zoom);
+	//printf("zoom %Lf\n", info->zoom);
 	if (info->zoom >= 200)
 			printf("exceeded 2x zoom level!");
 	
 	//ft_bzero(info->img->addr, WSZ * WSZ * sizeof(int));
 	//fill_mandelbrot(*info);
-	mt_draw(*info);
+	if (info->img_zoom > 2.0)
+	{
+		info->img_zoom = 1.0;
+		mt_draw(*info);
+	}
+	
 	//printf("mandelbrot done ?\n");
 	mlx_put_image_to_window(info->mlx, info->win, info->img->ptr, 0, 0);
 	mlx_do_sync(info->mlx);
@@ -80,19 +85,25 @@ int	mouse_hook(int button, int x, int y, void *p)
 	t_mlx_info		*i;
 
 	i = (t_mlx_info *)p;
-	if (button == SCRL_DOWN)
-		i->zoom = i->zoom * 0.9;
-	if (button == SCRL_UP) {
-		i->zoom = i->zoom * 1.1;
+	if (button == SCRL_DOWN) {
+		//i->zoom = i->zoom * 0.9;
+		//i->img_zoom += 0.25;
+	}
 		
-		if (i->zoom >= 200)
-			printf("exceeded 2x zoom level!");
+	if (button == SCRL_UP) {
+		//i->zoom = i->zoom * 1.1;
+		i->img_zoom += 0.25;
+		sample_image(i);
 	}
 		
 	if (button == 1)
 	{
 		i->pos[X] += (x - (WSZ / 2)) / i->zoom;
 		i->pos[Y] += (y - (WSZ / 2)) / i->zoom;
+		printf("x %Lf y %Lf \n", i->pos[X], i->pos[Y]);
+		update_t_args(*i);
+		mt_draw(*i);
+		sample_image(i);
 	}
 	update_t_args(*i);
 	return (1);
@@ -106,10 +117,14 @@ static void start_mlx(t_mlx_info *info)
 	info->img->addr = mlx_get_data_addr(info->img->ptr, (int *)&(info->img->bpp),
 			(int *)&(info->img->size_line), &(info->img->endian));
 	ft_memcpy(info->img->size, (int [2]) {WSZ, WSZ}, sizeof (int [2]));
+	/* img cpy */
 	ft_memcpy(&info->img[1], &info->img[0], sizeof(t_image_info));
 	ft_memcpy(info->img[1].size, (int [2]) {WSZ * 2, WSZ * 2}, sizeof (int [2]));
-	info->img[1].addr = ft_memalloc(info->img->size_line * WSZ);
+	info->img[1].size_line *= 2;
+	info->img[1].addr = ft_memalloc(info->img[1].size_line * WSZ * 4);
+
 	info->zoom = 100.0;
+	info->img_zoom = 2.1;
 	ft_bzero(info->pos, sizeof(long double [2]));
 	//info->pos[X] -= WSZ / 2;
 	//info->pos[Y] += WSZ / 2;
