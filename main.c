@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 18:05:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/13 12:12:59 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ int	get_pixel_color(float z)
 	{
 		DARK_ORANGE, LGHT_ORANGE, LGHT_BLUE, DARK_BLUE, 0
 	};
-
 	
 	//printf("lerp test %f \n", ft_lerpf(100,50, 0.2));
 	
@@ -51,7 +50,7 @@ static int	loop(void *p)
 	
 	//ft_bzero(info->img->addr, WSZ * WSZ * sizeof(int));
 	//fill_mandelbrot(*info);
-	if (info->img_zoom > 2.0)
+	if (info->img_zoom > 1.5)
 	{
 		info->img_zoom = 1.0;
 		mt_draw(*info);
@@ -87,7 +86,14 @@ int	mouse_hook(int button, int x, int y, void *p)
 	i = (t_mlx_info *)p;
 	if (button == SCRL_DOWN) {
 		//i->zoom = i->zoom * 0.9;
-		//i->img_zoom += 0.25;
+		i->img_zoom -= 0.25;
+		
+		if (i->img_zoom < 0.5)
+			i->img_zoom = 1.0;
+
+		printf("zoom %f", i->img_zoom);
+		sample_image(i);
+		
 	}
 		
 	if (button == SCRL_UP) {
