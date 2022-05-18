@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/13 12:12:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/18 21:14:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,10 @@ static int	loop(void *p)
 	if (info->img_zoom > 1.5)
 	{
 		info->img_zoom = 1.0;
+		info->zoom *= 2;
+		update_t_args(*info);
 		mt_draw(*info);
+		sample_image(info);
 	}
 	
 	//printf("mandelbrot done ?\n");
