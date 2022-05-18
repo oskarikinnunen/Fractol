@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/18 21:14:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/18 21:30:03 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ static int	loop(void *p)
 	if (info->img_zoom > 1.5)
 	{
 		info->img_zoom = 1.0;
-		info->zoom *= 2;
+		info->zoom *= 1.5;
 		update_t_args(*info);
 		mt_draw(*info);
 		sample_image(info);
