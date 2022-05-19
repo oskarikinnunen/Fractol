@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/18 21:30:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/19 21:37:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,15 @@ static int	loop(void *p)
 	t_mlx_info			*info;
 
 	info = (t_mlx_info *)p;
-	//printf("zoom %Lf\n", info->zoom);
-	if (info->zoom >= 200)
-			printf("exceeded 2x zoom level!");
 	
 	//ft_bzero(info->img->addr, WSZ * WSZ * sizeof(int));
 	//fill_mandelbrot(*info);
 	if (info->img_zoom > 1.5)
 	{
 		info->img_zoom = 1.0;
-		info->zoom *= 1.5;
+		info->zoom *= 2.0;
+		info->pos[X] += (WSZ / 2) / info->zoom;
+		info->pos[Y] += (WSZ / 2) / info->zoom;
 		update_t_args(*info);
 		mt_draw(*info);
 		sample_image(info);
@@ -88,32 +87,33 @@ int	mouse_hook(int button, int x, int y, void *p)
 
 	i = (t_mlx_info *)p;
 	if (button == SCRL_DOWN) {
-		//i->zoom = i->zoom * 0.9;
 		i->img_zoom -= 0.25;
 		
-		if (i->img_zoom < 0.5)
+		if (i->img_zoom < 0.5) {
 			i->img_zoom = 1.0;
-
-		printf("zoom %f", i->img_zoom);
-		sample_image(i);
-		
+			
+			i->pos[X] -= (WSZ / 2) / (i->zoom);
+			i->pos[Y] -= (WSZ / 2) / (i->zoom);
+			i->zoom *= 0.5;
+			update_t_args(*i);
+			mt_draw(*i);
+			printf("rzoom %Lf", i->zoom);
+		}
 	}
 		
-	if (button == SCRL_UP) {
-		//i->zoom = i->zoom * 1.1;
+	if (button == SCRL_UP)
 		i->img_zoom += 0.25;
-		sample_image(i);
-	}
 		
 	if (button == 1)
 	{
-		i->pos[X] += (x - (WSZ / 2)) / i->zoom;
-		i->pos[Y] += (y - (WSZ / 2)) / i->zoom;
+		i->pos[X] += ((x - (WSZ / 2)) / i->zoom) / i->img_zoom; //always do this b4 mtdraw but just with screen center coordinates?
+		i->pos[Y] += ((y - (WSZ / 2)) / i->zoom) / i->img_zoom;
 		printf("x %Lf y %Lf \n", i->pos[X], i->pos[Y]);
 		update_t_args(*i);
 		mt_draw(*i);
-		sample_image(i);
+		
 	}
+	sample_image(i);
 	update_t_args(*i);
 	return (1);
 }

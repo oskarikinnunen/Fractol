@@ -12,8 +12,8 @@ gcc -Ilibft -pthread -g    -c -o sample_image.o sample_image.c
 make -C mlx/OS_X
 mv mlx/OS_X/libmlx.dylib libmlx.dylib
 make -C libft
-gcc -Ilibft -pthread -g  -o fractol main.o threading.o bigfloat.o sample_image.o libft/libft.a libmlx.dylib libmlx.dylib
  
+gcc -Ilibft -pthread -g  -o fractol main.o threading.o bigfloat.o sample_image.o libft/libft.a libmlx.dylib libmlx.dylib
 make[1]: Leaving directory `/Users/okinnune/fracRemote'
 make: Leaving directory `/Users/okinnune/fracRemote'
  

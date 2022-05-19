@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/13 12:04:08 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/19 21:26:21 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static void	*fill_fractal_mt(void *v_arg)
 	ft_bzero(&c, sizeof(t_complex));
 	ft_bzero(crd, sizeof(long double [2]));
 	pixelcount = 0;
-	float g_scale = 0.1;
+	//float g_scale = 0.1;
 	assert(arg->img->size[X] == WSZ * 2 && arg->img->size[Y] == WSZ * 2);
 	while(crd[Y] < arg->img->size[Y] && pixelcount <= arg->endpixel)
 	{
@@ -88,8 +88,8 @@ static void	*fill_fractal_mt(void *v_arg)
 			}
 			c.real = (arg->pos[X] - ((double)(WSZ / 2) / arg->zoom)) + (crd[X]  / arg->zoom);
 			c.imaginary = (arg->pos[Y] - ((double)(WSZ / 2) / arg->zoom)) + (crd[Y]  / arg->zoom);
-			c.real *= g_scale;
-			c.imaginary *= g_scale;
+			//c.real *= g_scale;
+			//c.imaginary *= g_scale;
 			*(unsigned int *)(arg->img->addr + (((int)crd[X]) * sizeof(int)) + (((int)crd[Y])
 					* arg->img->size_line)) = mandelbrot(c);
 			crd[X]++;

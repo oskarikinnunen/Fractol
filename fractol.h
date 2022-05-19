@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/12 17:45:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/19 21:24:12 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "mlx.h"
 # include "libft.h"
 # include <pthread.h>
+# include <sys/time.h>
 
 //REMOVE
 # include <stdio.h>

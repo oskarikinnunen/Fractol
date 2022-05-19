@@ -6,13 +6,11 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # PARTICULAR PURPOSE.
 
 # This program built for i386-apple-darwin11.3.0
- 
 
-# Make data base, printed on Wed May 18 19:57:16 2022
+# Make data base, printed on Thu May 19 20:35:09 2022
 
 # Variables
 
- 
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
@@ -42,11 +40,11 @@ VSCODE_VERBOSE_LOGGING = true
 # makefile (from `Makefile', line 16)
 OBJS = $(SRCS:.c=.o)
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n0000kmr0004n6/T/vscode-ipc-3bc7a2e1-e49f-4fcb-be72-015bb98923d9.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n0000kmr0004n6/T/vscode-ipc-158b8fad-807d-42c9-816a-112ca23967fc.sock
 # environment
 VSCODE_CWD = /
 # environment
-Apple_PubSub_Socket_Render = /private/tmp/com.apple.launchd.P10x2OCgN5/Render
+Apple_PubSub_Socket_Render = /private/tmp/com.apple.launchd.EFlOIAurCF/Render
 # environment
 PATH = /Users/okinnune/.brew/bin:/Users/okinnune/.brew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki:/Library/Frameworks/Mono.framework/Versions/Current/Commands
 # environment
@@ -58,7 +56,7 @@ MLIB = libmlx.dylib
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.HIZ9JiHQo0/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.9h5xQE0iX4/Listeners
 # automatic
 %F = $(notdir $%)
 # makefile (from `Makefile', line 22)
@@ -160,7 +158,7 @@ MAKELEVEL := 0
 # environment
 LANG = C
 # environment
-VSCODE_PID = 720
+VSCODE_PID = 7817
 # variable set hash-table stats:
 # Load=74/1024=7%, Rehash=0, Collisions=6/115=5%
 
@@ -327,6 +325,6 @@ sample_image.o:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Wed May 18 19:57:16 2022
+# Finished Make data base on Thu May 19 20:35:09 2022
 
  

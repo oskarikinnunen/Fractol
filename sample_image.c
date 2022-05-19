@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 16:48:06 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/18 21:09:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/19 17:57:28 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ static unsigned int	get_img_pixel(t_image_info img, int x, int y)
 	x = x * sizeof(int); //TODO: bpp * sizeof char?
 	y = y * img.size_line;
 	return (*(unsigned int *)(img.addr + x + y));
-	//*(unsigned int *)(img.addr + x + y) = color; return derefed color
 }
 
 void	sample_image(t_mlx_info *info)
