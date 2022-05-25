@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 12:28:43 by okinnune          #+#    #+#              #
-#    Updated: 2022/05/12 17:44:46 by okinnune         ###   ########.fr        #
+#    Updated: 2022/05/25 13:12:24 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRCS = main.c threading.c bigfloat.c sample_image.c
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
 CC = gcc -Ilibft
-CFLAGS = -pthread -g #-fsanitize=address
+CFLAGS = -pthread -g -mavx#-fsanitize=address
 UNAME= $(shell uname)
 ifeq ($(UNAME), Darwin)
 MLXFLAGS = libmlx.dylib

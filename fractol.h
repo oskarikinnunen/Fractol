@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/19 21:24:12 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/25 13:05:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@
 
 # define WSZ 1024
 # define MAX_ITERS 3
+# define FALSE 0
+# define TRUE 1
 # define X 0
 # define Y 1
 # define INT_MAX 2147483647
@@ -77,16 +79,11 @@ typedef struct s_thread_arg
 {
 	t_image_info	*img;
 	int				startpixel;
+	long double		pixelcrd[2];
 	int				endpixel;
 	long double		zoom;
 	long double 	pos[2];
 }	t_thread_arg;
-
-typedef struct s_hugefloat
-{
-	void	*exponent;
-	void	*significand;
-}	t_hugefloat;
 
 typedef struct s_mlx_info
 {
@@ -100,14 +97,15 @@ typedef struct s_mlx_info
 	long double			zoom;
 	long double			target_zoom;
 	float				img_zoom;
+	_Bool				anim_toggle;
 }	t_mlx_info;
 
-int			get_pixel_color(float z);
-void		populate_threadinfo(t_mlx_info *info);
-void		update_t_args(t_mlx_info info);
-void		mt_draw(t_mlx_info info);
-void		sample_image(t_mlx_info *info);
-
-t_hugefloat	*hf_new();
+int				get_pixel_color(float z);
+void			populate_threadinfo(t_mlx_info *info);
+void			update_t_args(t_mlx_info info);
+void			mt_draw(t_mlx_info info);
+void			sample_image(t_mlx_info *info);
+unsigned int	get_img_pixel(t_image_info img, int x, int y);
+void			set_img_pixel(t_image_info img, int x, int y, unsigned int color);
 
 # endif

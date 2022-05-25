@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/19 21:26:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/25 13:19:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	populate_threadinfo(t_mlx_info *info)
 	int	image_length;
 
 	image_length = WSZ * WSZ * 4;
-	info->thread_count = (int)sysconf(_SC_NPROCESSORS_ONLN) * 2;
+	info->thread_count = (int)sysconf(_SC_NPROCESSORS_ONLN) /** 2*/;
 	printf("thread count %i \n", info->thread_count);
 	if (info->thread_count > 0)
 	{
@@ -63,41 +63,55 @@ static int	mandelbrot(t_complex c)
 
 #include <assert.h>
 
+static double	time_elapsed(struct timeval t1)
+{
+	struct timeval	t2;
+
+	gettimeofday(&(t2), NULL);
+	if (gettimeofday(&(t2), NULL) <= -1)
+		exit(0);
+	return (t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0));
+	/*return ((t2.tv_sec - t1.tv_sec)
+		+ (t2.tv_usec - t1.tv_usec) / 1000.0);*/
+}
+
 static void	*fill_fractal_mt(void *v_arg)
 {
 	long double		crd[2];
 	int				pixelcount;
 	t_thread_arg	*arg;
 	t_complex		c;
+	struct timeval	tm;
 
 	arg = (t_thread_arg *)v_arg;
-	ft_bzero(&c, sizeof(t_complex));
 	ft_bzero(crd, sizeof(long double [2]));
-	pixelcount = 0;
-	//float g_scale = 0.1;
-	assert(arg->img->size[X] == WSZ * 2 && arg->img->size[Y] == WSZ * 2);
-	while(crd[Y] < arg->img->size[Y] && pixelcount <= arg->endpixel)
+	ft_memcpy(crd, arg->pixelcrd, sizeof(long double [2]));
+	gettimeofday(&tm, NULL);
+	while (crd[Y] < arg->img->size[Y] &&
+		(arg->img->size[X] * crd[Y]) + crd[X] <= arg->endpixel)
 	{
-		while(crd[X] < arg->img->size[X] && pixelcount <= arg->endpixel)
+		while (crd[X] < arg->img->size[X] &&
+			(arg->img->size[X] * crd[Y]) + crd[X] <= arg->endpixel)
 		{
-			pixelcount++;
-			if (pixelcount < arg->startpixel)
+			if ((arg->img->size[X] * crd[Y]) + crd[X] >= arg->startpixel)
 			{
-				crd[X]++; //Fix for norminette, make more compact
-				continue;
+				c.real = (arg->pos[X] - ((double)(WSZ / 2) / arg->zoom)) + (crd[X]  / arg->zoom);
+				c.imaginary = (arg->pos[Y] - ((double)(WSZ / 2) / arg->zoom)) + (crd[Y]  / arg->zoom);
+				set_img_pixel(*arg->img, crd[X], crd[Y], mandelbrot(c));
 			}
-			c.real = (arg->pos[X] - ((double)(WSZ / 2) / arg->zoom)) + (crd[X]  / arg->zoom);
-			c.imaginary = (arg->pos[Y] - ((double)(WSZ / 2) / arg->zoom)) + (crd[Y]  / arg->zoom);
-			//c.real *= g_scale;
-			//c.imaginary *= g_scale;
-			*(unsigned int *)(arg->img->addr + (((int)crd[X]) * sizeof(int)) + (((int)crd[Y])
-					* arg->img->size_line)) = mandelbrot(c);
 			crd[X]++;
 		}
 		crd[X] = 0;
-		pixelcount++;
 		crd[Y]++;
+		if (time_elapsed(tm) > 0.02) // Just save the pixel coordinate
+		{
+			ft_memcpy(arg->pixelcrd, crd, sizeof(long double [2]));
+			return (NULL) ;
+		}
 	}
+	ft_bzero(arg->pixelcrd, sizeof(long double [2]));
+	//arg->endpixel = 0;
+	printf("time elapsed %f \n", time_elapsed(tm));
 	return (NULL);
 }
 
@@ -110,6 +124,8 @@ void	update_t_args(t_mlx_info info)
 	{
 		info.t_args[i].zoom = info.zoom;
 		ft_memcpy(info.t_args[i].pos, info.pos, sizeof(long double [2]));
+		//info.t_args[i].curpixel = 0;
+		//ft_bzero(info.t_args[i].pixelcrd, sizeof(long double [2]));
 		i++;
 	}
 }

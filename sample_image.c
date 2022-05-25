@@ -6,24 +6,29 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 16:48:06 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/19 17:57:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/25 13:25:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
 
-static void	set_img_pixel(t_image_info img, int x, int y, unsigned int color)
+void	set_img_pixel(t_image_info img, int x, int y, unsigned int color)
 {
 	x = x * sizeof(int); //TODO: bpp * sizeof char?
 	y = y * img.size_line;
 	*(unsigned int *)(img.addr + x + y) = color;
 }
 
-static unsigned int	get_img_pixel(t_image_info img, int x, int y)
+unsigned int	get_img_pixel(t_image_info img, int x, int y)
 {
 	x = x * sizeof(int); //TODO: bpp * sizeof char?
 	y = y * img.size_line;
 	return (*(unsigned int *)(img.addr + x + y));
+}
+
+int	pixel_index(int x, int y, int line_width)
+{
+	return ((y * line_width) + x);
 }
 
 void	sample_image(t_mlx_info *info)
@@ -39,7 +44,7 @@ void	sample_image(t_mlx_info *info)
 	{
 		while (crd[X] < info->img->size[X])
 		{
-			scaled_crd[X] =  (crd[X] - offset) / info->img_zoom; //PLus centered screen offset
+			scaled_crd[X] =  (crd[X] - offset) / info->img_zoom;
 			scaled_crd[Y] = (crd[Y] - offset) / info->img_zoom;
 			set_img_pixel(*info->img, crd[X], crd[Y], get_img_pixel(info->img[1], scaled_crd[X], scaled_crd[Y]));
 			if (scaled_crd[X] == info->img[1].size[X] / 2 && scaled_crd[Y] == info->img[1].size[Y] / 2)

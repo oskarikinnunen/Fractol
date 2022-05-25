@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/19 21:37:28 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/05/25 13:23:25 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,28 @@ int	get_pixel_color(float z)
 	//printf("lerp test %f \n", ft_lerpf(100,50, 0.2));
 	
 	z = ft_clampf(z, 0, 3);
-	//printf("color1 %i color2 %i lerp %f \n", (int)z, (int)z + 1, z- (int)z);
-	lcolor = g_colorlerp(color[(int)z], color[((int)z) + 1], z- (int)z);
+	if (z + 1 > 4.0)
+	{
+		z -= 4.0; //Or maybe just
+	}
+	lcolor = g_colorlerp(color[(int)z], color[((int)z) + 1], z - (int)z);
 	return (lcolor);
+}
+
+static int	thread_done(t_mlx_info info)
+{
+	int		i;
+	_Bool	result;
+
+	i = 0;
+	result = TRUE;
+	while (i < info.thread_count)
+	{
+		if ((info.t_args[i].img->size[X] * info.t_args[i].pixelcrd[Y]) + info.t_args[i].pixelcrd[X] < info.t_args[i].endpixel)
+			result = FALSE;
+		i++;
+	}
+	return (result);
 }
 
 static int	loop(void *p)
@@ -54,11 +73,11 @@ static int	loop(void *p)
 		info->pos[X] += (WSZ / 2) / info->zoom;
 		info->pos[Y] += (WSZ / 2) / info->zoom;
 		update_t_args(*info);
-		mt_draw(*info);
-		sample_image(info);
+		
 	}
-	
-	//printf("mandelbrot done ?\n");
+	mt_draw(*info);
+	sample_image(info);
+	//printf("all threads done == %i\n", thread_done(*info));
 	mlx_put_image_to_window(info->mlx, info->win, info->img->ptr, 0, 0);
 	mlx_do_sync(info->mlx);
 	return (1);
