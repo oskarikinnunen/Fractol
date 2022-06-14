@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/25 13:23:25 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/14 14:08:13 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,16 +42,16 @@ int	get_pixel_color(float z)
 	return (lcolor);
 }
 
-static int	thread_done(t_mlx_info info)
+int	thread_done(t_mlx_info info)
 {
 	int		i;
 	_Bool	result;
 
-	i = 0;
 	result = TRUE;
+	i = 0;
 	while (i < info.thread_count)
 	{
-		if ((info.t_args[i].img->size[X] * info.t_args[i].pixelcrd[Y]) + info.t_args[i].pixelcrd[X] < info.t_args[i].endpixel)
+		if (!info.t_args[i].finished)
 			result = FALSE;
 		i++;
 	}
@@ -63,20 +63,29 @@ static int	loop(void *p)
 	t_mlx_info			*info;
 
 	info = (t_mlx_info *)p;
-	
 	//ft_bzero(info->img->addr, WSZ * WSZ * sizeof(int));
 	//fill_mandelbrot(*info);
-	if (info->img_zoom > 1.5)
+	if (info->img_zoom > 1.5 && thread_done(*info))
 	{
-		info->img_zoom = 1.0;
+		//info->img_zoom = 1.0;
 		info->zoom *= 2.0;
 		info->pos[X] += (WSZ / 2) / info->zoom;
 		info->pos[Y] += (WSZ / 2) / info->zoom;
 		update_t_args(*info);
-		
+		set_t_arg_finished(*info, FALSE);
 	}
-	mt_draw(*info);
+	
+
+	if (!thread_done(*info))
+	{
+		mt_draw(*info);
+	}
+	/*else
+	{*/
+	
 	sample_image(info);
+		
+	
 	//printf("all threads done == %i\n", thread_done(*info));
 	mlx_put_image_to_window(info->mlx, info->win, info->img->ptr, 0, 0);
 	mlx_do_sync(info->mlx);
@@ -115,24 +124,26 @@ int	mouse_hook(int button, int x, int y, void *p)
 			i->pos[Y] -= (WSZ / 2) / (i->zoom);
 			i->zoom *= 0.5;
 			update_t_args(*i);
-			mt_draw(*i);
-			printf("rzoom %Lf", i->zoom);
+			set_t_arg_finished(*i, FALSE);
 		}
 	}
 		
 	if (button == SCRL_UP)
+	{
 		i->img_zoom += 0.25;
+		//i->img_zoom = ft_clampf(i->img_zoom + 0.25, 0, 1.5);
+	}
+		
 		
 	if (button == 1)
 	{
-		i->pos[X] += ((x - (WSZ / 2)) / i->zoom) / i->img_zoom; //always do this b4 mtdraw but just with screen center coordinates?
+		i->pos[X] += ((x - (WSZ / 2)) / i->zoom) / i->img_zoom;
 		i->pos[Y] += ((y - (WSZ / 2)) / i->zoom) / i->img_zoom;
 		printf("x %Lf y %Lf \n", i->pos[X], i->pos[Y]);
 		update_t_args(*i);
-		mt_draw(*i);
-		
+		set_t_arg_finished(*i, FALSE);
 	}
-	sample_image(i);
+	//sample_image(i);
 	update_t_args(*i);
 	return (1);
 }
@@ -152,7 +163,7 @@ static void start_mlx(t_mlx_info *info)
 	info->img[1].addr = ft_memalloc(info->img[1].size_line * WSZ * 4);
 
 	info->zoom = 100.0;
-	info->img_zoom = 2.1;
+	info->img_zoom = 1.5;
 	ft_bzero(info->pos, sizeof(long double [2]));
 	//info->pos[X] -= WSZ / 2;
 	//info->pos[Y] += WSZ / 2;

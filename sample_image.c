@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 16:48:06 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/25 13:25:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/14 12:06:17 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ void	sample_image(t_mlx_info *info)
 {
 	int	crd[2];
 	int	scaled_crd[2];
-	float	ogzoom = info->img_zoom;
 
 	ft_bzero(crd, sizeof(int [2]));
 	ft_bzero(scaled_crd, sizeof(int [2]));

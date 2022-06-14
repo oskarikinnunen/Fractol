@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/25 13:05:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/14 13:47:18 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,17 @@ typedef struct s_image_info
 
 //TODO: draw zoom image target on screen as a square, redraw the actual 2x image once we reach that
 //2 zoom variables, one for the actual mandelbrot zoom and one for the "digital" zoom that we do on the copy image
+
+// Full size image, actually sampled image, and the blurry copy
 typedef struct s_thread_arg
 {
 	t_image_info	*img;
+	t_image_info	*local_img;
 	int				startpixel;
 	long double		pixelcrd[2];
+	_Bool			finished;
 	int				endpixel;
+	float			*img_zoom;
 	long double		zoom;
 	long double 	pos[2];
 }	t_thread_arg;
@@ -102,6 +107,8 @@ typedef struct s_mlx_info
 
 int				get_pixel_color(float z);
 void			populate_threadinfo(t_mlx_info *info);
+void			set_t_arg_finished(t_mlx_info info, _Bool b);
+int				thread_done(t_mlx_info info);
 void			update_t_args(t_mlx_info info);
 void			mt_draw(t_mlx_info info);
 void			sample_image(t_mlx_info *info);

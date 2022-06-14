@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/05/25 13:19:05 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/14 14:11:09 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,12 @@ void	populate_threadinfo(t_mlx_info *info)
 		printf("targ %i start %i end %i \n", t_i, info->t_args[t_i].startpixel, info->t_args[t_i].endpixel);
 		info->t_args[t_i].img = &info->img[1];
 		info->t_args[t_i].zoom = info->zoom;
+		info->t_args[t_i].img_zoom = &info->img_zoom;
 		ft_memcpy(info->t_args[t_i].pos, info->pos, sizeof (long double [2]));
+		//Malloc local cpy image
+		info->t_args[t_i].local_img = ft_memalloc(sizeof(t_image_info)); //TODO: protec
+		ft_memcpy(info->t_args[t_i].local_img, &info->img[1], sizeof(t_image_info));
+		info->t_args[t_i].local_img->addr = ft_memalloc(sizeof(int) * info->img[1].size[X] * info->img[1].size[Y]);
 		t_i++;
 	}
 }
@@ -71,11 +76,11 @@ static double	time_elapsed(struct timeval t1)
 	if (gettimeofday(&(t2), NULL) <= -1)
 		exit(0);
 	return (t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0));
-	/*return ((t2.tv_sec - t1.tv_sec)
-		+ (t2.tv_usec - t1.tv_usec) / 1000.0);*/
 }
 
-static void	*fill_fractal_mt(void *v_arg)
+int global_debug = 0;
+
+static void	*fill_fractal_mt(void *v_arg) //Use local image instead
 {
 	long double		crd[2];
 	int				pixelcount;
@@ -87,8 +92,7 @@ static void	*fill_fractal_mt(void *v_arg)
 	ft_bzero(crd, sizeof(long double [2]));
 	ft_memcpy(crd, arg->pixelcrd, sizeof(long double [2]));
 	gettimeofday(&tm, NULL);
-	while (crd[Y] < arg->img->size[Y] &&
-		(arg->img->size[X] * crd[Y]) + crd[X] <= arg->endpixel)
+	while ((arg->img->size[X] * crd[Y]) + crd[X] <= arg->endpixel)
 	{
 		while (crd[X] < arg->img->size[X] &&
 			(arg->img->size[X] * crd[Y]) + crd[X] <= arg->endpixel)
@@ -97,22 +101,45 @@ static void	*fill_fractal_mt(void *v_arg)
 			{
 				c.real = (arg->pos[X] - ((double)(WSZ / 2) / arg->zoom)) + (crd[X]  / arg->zoom);
 				c.imaginary = (arg->pos[Y] - ((double)(WSZ / 2) / arg->zoom)) + (crd[Y]  / arg->zoom);
-				set_img_pixel(*arg->img, crd[X], crd[Y], mandelbrot(c));
+				//set_img_pixel(*arg->img, crd[X], crd[Y], mandelbrot(c));
+				set_img_pixel(*arg->local_img, crd[X], crd[Y], mandelbrot(c));
 			}
 			crd[X]++;
 		}
+		
+		
 		crd[X] = 0;
 		crd[Y]++;
-		if (time_elapsed(tm) > 0.02) // Just save the pixel coordinate
+		if (time_elapsed(tm) > 0.02 && crd[X] + (crd[Y] * arg->img->size[X]) < arg->endpixel) // Just save the pixel coordinate
 		{
 			ft_memcpy(arg->pixelcrd, crd, sizeof(long double [2]));
 			return (NULL) ;
 		}
 	}
 	ft_bzero(arg->pixelcrd, sizeof(long double [2]));
-	//arg->endpixel = 0;
-	printf("time elapsed %f \n", time_elapsed(tm));
+	if (global_debug < 24 || 1) {
+		/*ft_memcpy(arg->img->addr + (sizeof(int) * arg->startpixel),
+		arg->local_img->addr + (sizeof(int) * arg->startpixel),
+		sizeof(int) * (arg->endpixel - arg->startpixel));
+		*arg->img_zoom = 1.0;*/
+	}
+	global_debug++;
+	arg->finished = TRUE;
 	return (NULL);
+}
+
+void	set_t_arg_finished(t_mlx_info info, _Bool b)
+{
+	int	i;
+
+	i = 0;
+	while (i < info.thread_count)
+	{
+		info.t_args[i].finished = b;
+		if (b == FALSE)
+			ft_bzero(info.t_args[i].pixelcrd, sizeof(long double [2]));
+		i++;
+	}
 }
 
 void	update_t_args(t_mlx_info info)
@@ -133,6 +160,7 @@ void	update_t_args(t_mlx_info info)
 void	mt_draw(t_mlx_info info)
 {
 	int	t_i;
+	t_thread_arg arg;
 
 	t_i = 0;
 	while (t_i < info.thread_count)
@@ -147,6 +175,19 @@ void	mt_draw(t_mlx_info info)
 	{
 		pthread_join(info.threads[t_i], NULL);
 		t_i++;
+	}
+	
+	if (thread_done(info)) //TODO: don't zoom out from click draw
+	{
+		t_i = 0;
+		while (t_i < info.thread_count) {
+			arg = info.t_args[t_i];
+			ft_memcpy(arg.img->addr + (sizeof(int) * arg.startpixel),
+				arg.local_img->addr + (sizeof(int) * arg.startpixel),
+				sizeof(int) * (arg.endpixel - arg.startpixel));
+			t_i++;
+		}
+		*arg.img_zoom /= 1.75;
 	}
 	//printf("join \n")
 }
