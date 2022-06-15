@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/14 14:11:09 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/15 17:02:15 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,27 @@ void	populate_threadinfo(t_mlx_info *info)
 	}
 }
 
-float	g_color_add = 0.05;
+float	g_color_add = 0.0145;
+float	julia_escape = 3.42;
+float	julia_n = 4;
+
+static int	julia(t_complex c)
+{
+	float			color;
+	t_complex	f;
+	t_complex	prev;
+
+	ft_bzero(&f, sizeof(t_complex));
+	color = 0;
+	while (f.real * f.real + f.imaginary * f.imaginary < 4 && color < MAX_ITERS)
+	{
+		ft_memcpy(&prev, &f, sizeof(t_complex));
+		f.real = ft_pow((f.real * f.real) - (f.imaginary * f.imaginary), julia_n / 2 * cos(julia_n * atan2(f.real, f.imaginary)) + c.real) ;
+		f.imaginary = ft_pow((prev.real * prev.real) - (prev.imaginary * prev.imaginary), julia_n / 2 * sin(julia_n * atan2(prev.real, prev.imaginary)) + c.imaginary) ;
+		color += g_color_add;
+	}
+	return (get_pixel_color(color));
+}
 
 static int	mandelbrot(t_complex c)
 {
@@ -78,7 +98,13 @@ static double	time_elapsed(struct timeval t1)
 	return (t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0));
 }
 
-int global_debug = 0;
+static void draw_progress_bar(t_thread_arg *arg)
+{
+	int	pixel_index;
+
+	set_img_pixel(*arg->img, arg->pixelcrd[X], arg->pixelcrd[Y], INT_MAX);
+	//*(unsigned int *)(arg->img->addr + pixel_index * sizeof(int)) = INT_MAX;
+}
 
 static void	*fill_fractal_mt(void *v_arg) //Use local image instead
 {
@@ -101,29 +127,21 @@ static void	*fill_fractal_mt(void *v_arg) //Use local image instead
 			{
 				c.real = (arg->pos[X] - ((double)(WSZ / 2) / arg->zoom)) + (crd[X]  / arg->zoom);
 				c.imaginary = (arg->pos[Y] - ((double)(WSZ / 2) / arg->zoom)) + (crd[Y]  / arg->zoom);
-				//set_img_pixel(*arg->img, crd[X], crd[Y], mandelbrot(c));
 				set_img_pixel(*arg->local_img, crd[X], crd[Y], mandelbrot(c));
+				//set_img_pixel(*arg->local_img, crd[X], crd[Y], julia(c));
 			}
 			crd[X]++;
 		}
-		
-		
 		crd[X] = 0;
 		crd[Y]++;
-		if (time_elapsed(tm) > 0.02 && crd[X] + (crd[Y] * arg->img->size[X]) < arg->endpixel) // Just save the pixel coordinate
+		if (time_elapsed(tm) > 0.06 && crd[X] + (crd[Y] * arg->img->size[X]) < arg->endpixel) // Just save the pixel coordinate
 		{
 			ft_memcpy(arg->pixelcrd, crd, sizeof(long double [2]));
-			return (NULL) ;
+			draw_progress_bar(arg);
+			return (NULL);
 		}
 	}
 	ft_bzero(arg->pixelcrd, sizeof(long double [2]));
-	if (global_debug < 24 || 1) {
-		/*ft_memcpy(arg->img->addr + (sizeof(int) * arg->startpixel),
-		arg->local_img->addr + (sizeof(int) * arg->startpixel),
-		sizeof(int) * (arg->endpixel - arg->startpixel));
-		*arg->img_zoom = 1.0;*/
-	}
-	global_debug++;
 	arg->finished = TRUE;
 	return (NULL);
 }
@@ -157,7 +175,7 @@ void	update_t_args(t_mlx_info info)
 	}
 }
 
-void	mt_draw(t_mlx_info info)
+void	mt_draw(t_mlx_info info, int action)
 {
 	int	t_i;
 	t_thread_arg arg;
@@ -177,7 +195,7 @@ void	mt_draw(t_mlx_info info)
 		t_i++;
 	}
 	
-	if (thread_done(info)) //TODO: don't zoom out from click draw
+	if (thread_done(info))
 	{
 		t_i = 0;
 		while (t_i < info.thread_count) {
@@ -187,7 +205,9 @@ void	mt_draw(t_mlx_info info)
 				sizeof(int) * (arg.endpixel - arg.startpixel));
 			t_i++;
 		}
-		*arg.img_zoom /= 1.75;
+		if (action == ACTION_ZOOM_IN) // Another one for zoom out which just sets this to 
+			*arg.img_zoom = ft_clampf(*arg.img_zoom * 0.5, 0.5, 10000.0);
+		else if (action == ACTION_ZOOM_OUT)
+			*arg.img_zoom = 1.0;
 	}
-	//printf("join \n")
 }

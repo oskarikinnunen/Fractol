@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/14 14:08:13 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/15 16:41:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # define DARK_ORANGE (255 << 16) + (140 << 8)
 # define LGHT_ORANGE (255 << 16) + (180 << 8)
 # define WHITE INT_MAX
-# define LGHT_BLUE (173 << 16) + (174 << 8) + 245
+# define LGHT_BLUE (173 << 16) + (50 << 8) + 245
 # define DARK_BLUE 139
 
 int	get_pixel_color(float z)
@@ -28,7 +28,7 @@ int	get_pixel_color(float z)
 	int	lcolor;
 	static int color[5] =
 	{
-		DARK_ORANGE, LGHT_ORANGE, LGHT_BLUE, DARK_BLUE, 0
+		DARK_ORANGE, LGHT_ORANGE, LGHT_BLUE, DARK_BLUE, WHITE
 	};
 	
 	//printf("lerp test %f \n", ft_lerpf(100,50, 0.2));
@@ -36,7 +36,7 @@ int	get_pixel_color(float z)
 	z = ft_clampf(z, 0, 3);
 	if (z + 1 > 4.0)
 	{
-		z -= 4.0; //Or maybe just
+		z -= 4.0;
 	}
 	lcolor = g_colorlerp(color[(int)z], color[((int)z) + 1], z - (int)z);
 	return (lcolor);
@@ -61,6 +61,7 @@ int	thread_done(t_mlx_info info)
 static int	loop(void *p)
 {
 	t_mlx_info			*info;
+	bool				zoom_in;
 
 	info = (t_mlx_info *)p;
 	//ft_bzero(info->img->addr, WSZ * WSZ * sizeof(int));
@@ -73,12 +74,13 @@ static int	loop(void *p)
 		info->pos[Y] += (WSZ / 2) / info->zoom;
 		update_t_args(*info);
 		set_t_arg_finished(*info, FALSE);
+		info->action = ACTION_ZOOM_IN;
 	}
 	
 
 	if (!thread_done(*info))
 	{
-		mt_draw(*info);
+		mt_draw(*info, info->action);
 	}
 	/*else
 	{*/
@@ -111,40 +113,31 @@ static int	key_loop(int keycode, void *p)
 
 int	mouse_hook(int button, int x, int y, void *p)
 {
-	t_mlx_info		*i;
+	t_mlx_info		*info;
 
-	i = (t_mlx_info *)p;
-	if (button == SCRL_DOWN) {
-		i->img_zoom -= 0.25;
-		
-		if (i->img_zoom < 0.5) {
-			i->img_zoom = 1.0;
-			
-			i->pos[X] -= (WSZ / 2) / (i->zoom);
-			i->pos[Y] -= (WSZ / 2) / (i->zoom);
-			i->zoom *= 0.5;
-			update_t_args(*i);
-			set_t_arg_finished(*i, FALSE);
+	info = (t_mlx_info *)p;
+	if (button == SCRL_DOWN)
+	{
+		info->img_zoom = ft_clampf(info->img_zoom - 0.25, 0.5, 1.5);
+		if (info->img_zoom <= 0.5 && info->zoom > 100 && thread_done(*info)) {
+			info->pos[X] -= (WSZ / 2) / (info->zoom); // info->img_zoom;
+			info->pos[Y] -= (WSZ / 2) / (info->zoom); // info->img_zoom;
+			info->zoom *= 0.5;
+			info->action = ACTION_ZOOM_OUT;
+			update_t_args(*info);
+			set_t_arg_finished(*info, FALSE);
 		}
 	}
-		
-	if (button == SCRL_UP)
+	info->img_zoom += 0.5 * (button == SCRL_UP);
+	if (button == 1 && thread_done(*info))
 	{
-		i->img_zoom += 0.25;
-		//i->img_zoom = ft_clampf(i->img_zoom + 0.25, 0, 1.5);
+		info->pos[X] += ((x - (WSZ / 2)) / info->zoom) / info->img_zoom;
+		info->pos[Y] += ((y - (WSZ / 2)) / info->zoom) / info->img_zoom;
+		printf("x %Lf y %Lf \n", info->pos[X], info->pos[Y]);
+		info->action = ACTION_CLICK;
+		set_t_arg_finished(*info, FALSE);
 	}
-		
-		
-	if (button == 1)
-	{
-		i->pos[X] += ((x - (WSZ / 2)) / i->zoom) / i->img_zoom;
-		i->pos[Y] += ((y - (WSZ / 2)) / i->zoom) / i->img_zoom;
-		printf("x %Lf y %Lf \n", i->pos[X], i->pos[Y]);
-		update_t_args(*i);
-		set_t_arg_finished(*i, FALSE);
-	}
-	//sample_image(i);
-	update_t_args(*i);
+	update_t_args(*info);
 	return (1);
 }
 
@@ -156,7 +149,6 @@ static void start_mlx(t_mlx_info *info)
 	info->img->addr = mlx_get_data_addr(info->img->ptr, (int *)&(info->img->bpp),
 			(int *)&(info->img->size_line), &(info->img->endian));
 	ft_memcpy(info->img->size, (int [2]) {WSZ, WSZ}, sizeof (int [2]));
-	/* img cpy */
 	ft_memcpy(&info->img[1], &info->img[0], sizeof(t_image_info));
 	ft_memcpy(info->img[1].size, (int [2]) {WSZ * 2, WSZ * 2}, sizeof (int [2]));
 	info->img[1].size_line *= 2;
@@ -165,8 +157,6 @@ static void start_mlx(t_mlx_info *info)
 	info->zoom = 100.0;
 	info->img_zoom = 1.5;
 	ft_bzero(info->pos, sizeof(long double [2]));
-	//info->pos[X] -= WSZ / 2;
-	//info->pos[Y] += WSZ / 2;
 	populate_threadinfo(info);
 	printf("threadcount after pop %i \n", info->thread_count);
 	printf("after pop start 1 %i \n", info->t_args[0].endpixel);
@@ -184,6 +174,4 @@ int	main(void)
 
 	info.img = img;
 	start_mlx(&info);
-	while (1)
-		;
 }

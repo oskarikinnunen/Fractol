@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/14 13:47:18 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/15 16:53:57 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define FRACTOL_H
 
 # include "mlx.h"
+# include <math.h>
 # include "libft.h"
 # include <pthread.h>
 # include <sys/time.h>
@@ -21,7 +22,7 @@
 //REMOVE
 # include <stdio.h>
 
-# define WSZ 1024
+# define WSZ 512
 # define MAX_ITERS 3
 # define FALSE 0
 # define TRUE 1
@@ -53,6 +54,9 @@
 
 # define SCRL_DOWN 5
 # define SCRL_UP 4
+# define ACTION_ZOOM_IN 0
+# define ACTION_ZOOM_OUT 1
+# define ACTION_CLICK 2
 
 
 typedef struct s_complex
@@ -102,7 +106,8 @@ typedef struct s_mlx_info
 	long double			zoom;
 	long double			target_zoom;
 	float				img_zoom;
-	_Bool				anim_toggle;
+	bool				anim_toggle;
+	int					action;
 }	t_mlx_info;
 
 int				get_pixel_color(float z);
@@ -110,7 +115,7 @@ void			populate_threadinfo(t_mlx_info *info);
 void			set_t_arg_finished(t_mlx_info info, _Bool b);
 int				thread_done(t_mlx_info info);
 void			update_t_args(t_mlx_info info);
-void			mt_draw(t_mlx_info info);
+void			mt_draw(t_mlx_info info, int zoom_in);
 void			sample_image(t_mlx_info *info);
 unsigned int	get_img_pixel(t_image_info img, int x, int y);
 void			set_img_pixel(t_image_info img, int x, int y, unsigned int color);
