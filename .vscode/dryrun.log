@@ -1,11 +1,16 @@
-make --dry-run --keep-going --print-directory
+make --dry-run --always-make --keep-going --print-directory
 make: Entering directory `/Users/okinnune/fracRemote'
 echo "Compiling for platform: Darwin."
 /Applications/Xcode.app/Contents/Developer/usr/bin/make fractol
  
 make[1]: Entering directory `/Users/okinnune/fracRemote'
-make[1]: `fractol' is up to date.
+gcc -Ilibft -pthread -g -mavx    -c -o main.o main.c
+gcc -Ilibft -pthread -g -mavx    -c -o threading.o threading.c
+gcc -Ilibft -pthread -g -mavx    -c -o sample_image.o sample_image.c
+make -C mlx/OS_X
+mv mlx/OS_X/libmlx.dylib libmlx.dylib
+make -C libft
+gcc -Ilibft -pthread -g -mavx  -o fractol main.o threading.o sample_image.o libft/libft.a libmlx.dylib libmlx.dylib
 make[1]: Leaving directory `/Users/okinnune/fracRemote'
- 
 make: Leaving directory `/Users/okinnune/fracRemote'
  

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/15 17:02:15 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/16 13:00:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,23 +46,28 @@ void	populate_threadinfo(t_mlx_info *info)
 	}
 }
 
-float	g_color_add = 0.0145;
+//float	g_color_add = 0.0145;
+float	g_color_add = 0.001;
 float	julia_escape = 3.42;
 float	julia_n = 4;
+float	julia_x = 0.005;
+float	julia_y = 0.005;
 
-static int	julia(t_complex c)
+static int	julia(t_complex c, float *pos)
 {
 	float			color;
 	t_complex	f;
 	t_complex	prev;
 
-	ft_bzero(&f, sizeof(t_complex));
+	//ft_bzero(&f, sizeof(t_complex));
+	ft_memcpy(&f, &c, sizeof(t_complex));
 	color = 0;
-	while (f.real * f.real + f.imaginary * f.imaginary < 4 && color < MAX_ITERS)
+	while (/*ft_absd(*/f.real * f.real + f.imaginary * f.imaginary/*)*/ < 4 && color < MAX_ITERS)
 	{
-		ft_memcpy(&prev, &f, sizeof(t_complex));
-		f.real = ft_pow((f.real * f.real) - (f.imaginary * f.imaginary), julia_n / 2 * cos(julia_n * atan2(f.real, f.imaginary)) + c.real) ;
-		f.imaginary = ft_pow((prev.real * prev.real) - (prev.imaginary * prev.imaginary), julia_n / 2 * sin(julia_n * atan2(prev.real, prev.imaginary)) + c.imaginary) ;
+		ft_memcpy(&f, &c, sizeof(t_complex));
+		//ft_memcpy(&prev, &f, sizeof(t_complex));
+		c.real = f.real * f.real - f.imaginary * f.imaginary + 0.258;
+		c.imaginary = 2 * f.real * f.imaginary + -0.1;
 		color += g_color_add;
 	}
 	return (get_pixel_color(color));
@@ -127,8 +132,8 @@ static void	*fill_fractal_mt(void *v_arg) //Use local image instead
 			{
 				c.real = (arg->pos[X] - ((double)(WSZ / 2) / arg->zoom)) + (crd[X]  / arg->zoom);
 				c.imaginary = (arg->pos[Y] - ((double)(WSZ / 2) / arg->zoom)) + (crd[Y]  / arg->zoom);
-				set_img_pixel(*arg->local_img, crd[X], crd[Y], mandelbrot(c));
-				//set_img_pixel(*arg->local_img, crd[X], crd[Y], julia(c));
+				//set_img_pixel(*arg->local_img, crd[X], crd[Y], mandelbrot(c));
+				set_img_pixel(*arg->local_img, crd[X], crd[Y], julia(c, arg->julia_pos));
 			}
 			crd[X]++;
 		}
@@ -168,7 +173,9 @@ void	update_t_args(t_mlx_info info)
 	while (i < info.thread_count)
 	{
 		info.t_args[i].zoom = info.zoom;
+		ft_memcpy(info.t_args[i].julia_pos, info.julia_pos, sizeof(float [2]));
 		ft_memcpy(info.t_args[i].pos, info.pos, sizeof(long double [2]));
+		
 		//info.t_args[i].curpixel = 0;
 		//ft_bzero(info.t_args[i].pixelcrd, sizeof(long double [2]));
 		i++;

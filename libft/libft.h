@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 17:57:33 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/15 13:16:03 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/16 11:50:06 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <stdbool.h>
 # include <unistd.h>
 # include "get_next_line.h"
+
+# define LFT_PI 3.14159265
 
 /* memory	*/
 void			*ft_memset(void *ptr, int value, size_t num);

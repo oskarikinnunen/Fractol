@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/15 16:41:43 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/16 13:04:52 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,12 @@ int	get_pixel_color(float z)
 	
 	//printf("lerp test %f \n", ft_lerpf(100,50, 0.2));
 	
-	z = ft_clampf(z, 0, 3);
+	//z = ft_clampf(z, 0, 3);
 	if (z + 1 > 4.0)
 	{
 		z -= 4.0;
 	}
+	//z = ft_clampf(z, 0, 3);
 	lcolor = g_colorlerp(color[(int)z], color[((int)z) + 1], z - (int)z);
 	return (lcolor);
 }
@@ -64,31 +65,18 @@ static int	loop(void *p)
 	bool				zoom_in;
 
 	info = (t_mlx_info *)p;
-	//ft_bzero(info->img->addr, WSZ * WSZ * sizeof(int));
-	//fill_mandelbrot(*info);
 	if (info->img_zoom > 1.5 && thread_done(*info))
 	{
-		//info->img_zoom = 1.0;
-		info->zoom *= 2.0;
+		info->zoom *= 2.0; //Multiply until it's the "final" multiplier, corresponding action in thread done
 		info->pos[X] += (WSZ / 2) / info->zoom;
 		info->pos[Y] += (WSZ / 2) / info->zoom;
 		update_t_args(*info);
 		set_t_arg_finished(*info, FALSE);
 		info->action = ACTION_ZOOM_IN;
 	}
-	
-
 	if (!thread_done(*info))
-	{
 		mt_draw(*info, info->action);
-	}
-	/*else
-	{*/
-	
 	sample_image(info);
-		
-	
-	//printf("all threads done == %i\n", thread_done(*info));
 	mlx_put_image_to_window(info->mlx, info->win, info->img->ptr, 0, 0);
 	mlx_do_sync(info->mlx);
 	return (1);
@@ -116,10 +104,12 @@ int	mouse_hook(int button, int x, int y, void *p)
 	t_mlx_info		*info;
 
 	info = (t_mlx_info *)p;
+	info->julia_pos[X] = x;
+	info->julia_pos[Y] = y;
 	if (button == SCRL_DOWN)
 	{
 		info->img_zoom = ft_clampf(info->img_zoom - 0.25, 0.5, 1.5);
-		if (info->img_zoom <= 0.5 && info->zoom > 100 && thread_done(*info)) {
+		if (info->img_zoom <= 0.5 && info->zoom > 20 && thread_done(*info)) {
 			info->pos[X] -= (WSZ / 2) / (info->zoom); // info->img_zoom;
 			info->pos[Y] -= (WSZ / 2) / (info->zoom); // info->img_zoom;
 			info->zoom *= 0.5;
@@ -143,6 +133,7 @@ int	mouse_hook(int button, int x, int y, void *p)
 
 static void start_mlx(t_mlx_info *info)
 {
+	//
 	info->mlx = mlx_init();
 	info->win = mlx_new_window(info->mlx, WSZ, WSZ, "new_window");
 	info->img->ptr = mlx_new_image(info->mlx, WSZ, WSZ);
@@ -172,6 +163,8 @@ int	main(void)
 	t_image_info img[2];
 	t_mlx_info info;
 
+	ft_bzero(&info, sizeof(t_mlx_info));
 	info.img = img;
+	
 	start_mlx(&info);
 }

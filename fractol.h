@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/15 16:53:57 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/16 13:00:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,15 +83,16 @@ typedef struct s_image_info
 // Full size image, actually sampled image, and the blurry copy
 typedef struct s_thread_arg
 {
-	t_image_info	*img;
-	t_image_info	*local_img;
-	int				startpixel;
-	long double		pixelcrd[2];
-	_Bool			finished;
-	int				endpixel;
-	float			*img_zoom;
-	long double		zoom;
-	long double 	pos[2];
+	t_image_info		*img;
+	t_image_info		*local_img;
+	int					startpixel;
+	long double			pixelcrd[2];
+	_Bool				finished;
+	int					endpixel;
+	float				*img_zoom;
+	float				julia_pos[2];
+	long double			zoom;
+	long double 		pos[2];
 }	t_thread_arg;
 
 typedef struct s_mlx_info
@@ -102,6 +103,7 @@ typedef struct s_mlx_info
 	pthread_t			*threads;
 	t_thread_arg		*t_args;
 	int					thread_count;
+	float				julia_pos[2];
 	long double			pos[2];
 	long double			zoom;
 	long double			target_zoom;
