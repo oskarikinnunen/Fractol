@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/16 13:00:48 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/16 16:24:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,36 +46,31 @@ void	populate_threadinfo(t_mlx_info *info)
 	}
 }
 
-//float	g_color_add = 0.0145;
-float	g_color_add = 0.001;
-float	julia_escape = 3.42;
-float	julia_n = 4;
-float	julia_x = 0.005;
-float	julia_y = 0.005;
-
 static int	julia(t_complex c, float *pos)
 {
-	float			color;
+	int			color;
 	t_complex	f;
 	t_complex	prev;
 
-	//ft_bzero(&f, sizeof(t_complex));
 	ft_memcpy(&f, &c, sizeof(t_complex));
 	color = 0;
-	while (/*ft_absd(*/f.real * f.real + f.imaginary * f.imaginary/*)*/ < 4 && color < MAX_ITERS)
+	while (ft_absd(f.real * f.real + f.imaginary * f.imaginary) < 8 && color < MAX_ITERS)
 	{
 		ft_memcpy(&f, &c, sizeof(t_complex));
 		//ft_memcpy(&prev, &f, sizeof(t_complex));
-		c.real = f.real * f.real - f.imaginary * f.imaginary + 0.258;
-		c.imaginary = 2 * f.real * f.imaginary + -0.1;
-		color += g_color_add;
+		c.real = f.real * f.real - f.imaginary * f.imaginary + pos[X];
+		c.imaginary = 2 * f.real * f.imaginary + pos[Y];
+		color++;
 	}
-	return (get_pixel_color(color));
+
+	//return ((c.real / c.imaginary) / WSZ * color * ((INT_MAX * 0.75) / MAX_ITERS));
+	return (color * ((INT_MAX * 0.75) / MAX_ITERS));
+	//return (get_pixel_color(color));
 }
 
 static int	mandelbrot(t_complex c)
 {
-	float			color;
+	int			color;
 	t_complex	f;
 	t_complex	prev;
 
@@ -86,12 +81,31 @@ static int	mandelbrot(t_complex c)
 		ft_memcpy(&prev, &f, sizeof(t_complex));
 		f.real = (f.real * f.real) - (f.imaginary * f.imaginary) + c.real;
 		f.imaginary = 2 * prev.real * prev.imaginary + c.imaginary;
-		color += g_color_add;
+		//color += g_color_add;
+		color++;
 	}
-	return (get_pixel_color(color));
+	return (color);
 }
 
-#include <assert.h>
+static int	ship(t_complex c)
+{
+	int			color;
+	t_complex	f;
+	t_complex	prev;
+
+	ft_bzero(&f, sizeof(t_complex));
+	color = 0;
+	while (f.real * f.real + f.imaginary * f.imaginary < 4 && color < MAX_ITERS)
+	{
+		ft_memcpy(&prev, &f, sizeof(t_complex));
+		f.real = (f.real * f.real) - (f.imaginary * f.imaginary) + c.real;
+		f.imaginary = 2 * prev.real * prev.imaginary + c.imaginary;
+		f.real = ft_absd(f.real);
+		f.imaginary = ft_absd(f.imaginary);
+		color++;
+	}
+	return (color * ((INT_MAX * 0.75) / MAX_ITERS));
+}
 
 static double	time_elapsed(struct timeval t1)
 {
@@ -101,14 +115,6 @@ static double	time_elapsed(struct timeval t1)
 	if (gettimeofday(&(t2), NULL) <= -1)
 		exit(0);
 	return (t2.tv_sec - t1.tv_sec + ((t2.tv_usec - t1.tv_usec) / 1000000.0));
-}
-
-static void draw_progress_bar(t_thread_arg *arg)
-{
-	int	pixel_index;
-
-	set_img_pixel(*arg->img, arg->pixelcrd[X], arg->pixelcrd[Y], INT_MAX);
-	//*(unsigned int *)(arg->img->addr + pixel_index * sizeof(int)) = INT_MAX;
 }
 
 static void	*fill_fractal_mt(void *v_arg) //Use local image instead
@@ -134,6 +140,7 @@ static void	*fill_fractal_mt(void *v_arg) //Use local image instead
 				c.imaginary = (arg->pos[Y] - ((double)(WSZ / 2) / arg->zoom)) + (crd[Y]  / arg->zoom);
 				//set_img_pixel(*arg->local_img, crd[X], crd[Y], mandelbrot(c));
 				set_img_pixel(*arg->local_img, crd[X], crd[Y], julia(c, arg->julia_pos));
+				//set_img_pixel(*arg->local_img, crd[X], crd[Y], ship(c));
 			}
 			crd[X]++;
 		}
@@ -142,7 +149,6 @@ static void	*fill_fractal_mt(void *v_arg) //Use local image instead
 		if (time_elapsed(tm) > 0.06 && crd[X] + (crd[Y] * arg->img->size[X]) < arg->endpixel) // Just save the pixel coordinate
 		{
 			ft_memcpy(arg->pixelcrd, crd, sizeof(long double [2]));
-			draw_progress_bar(arg);
 			return (NULL);
 		}
 	}
@@ -212,8 +218,11 @@ void	mt_draw(t_mlx_info info, int action)
 				sizeof(int) * (arg.endpixel - arg.startpixel));
 			t_i++;
 		}
-		if (action == ACTION_ZOOM_IN) // Another one for zoom out which just sets this to 
+		if (action == ACTION_ZOOM_IN) 
+		{
 			*arg.img_zoom = ft_clampf(*arg.img_zoom * 0.5, 0.5, 10000.0);
+		}
+			
 		else if (action == ACTION_ZOOM_OUT)
 			*arg.img_zoom = 1.0;
 	}

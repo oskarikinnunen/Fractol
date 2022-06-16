@@ -5,6 +5,7 @@ echo "Compiling for platform: Darwin."
  
 make[1]: Entering directory `/Users/okinnune/fracRemote'
 gcc -Ilibft -pthread -g -mavx    -c -o main.o main.c
+ 
 gcc -Ilibft -pthread -g -mavx    -c -o threading.o threading.c
 gcc -Ilibft -pthread -g -mavx    -c -o sample_image.o sample_image.c
 make -C mlx/OS_X

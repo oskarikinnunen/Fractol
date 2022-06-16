@@ -6,14 +6,15 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/16 13:00:36 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/16 16:13:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-# include "mlx.h"
+//# include <X11/X.h>
+# include "mlx/OS_X/mlx.h"
 # include <math.h>
 # include "libft.h"
 # include <pthread.h>
@@ -23,7 +24,9 @@
 # include <stdio.h>
 
 # define WSZ 512
-# define MAX_ITERS 3
+# define MAX_ITERS 140
+# define ZOOM_LIMIT 112589990684262400.000000
+# define ZOOM_DECELERATION 0.82
 # define FALSE 0
 # define TRUE 1
 # define X 0
@@ -95,6 +98,12 @@ typedef struct s_thread_arg
 	long double 		pos[2];
 }	t_thread_arg;
 
+typedef struct s_julia
+{
+	float	pos[2];
+
+}	t_julia;
+
 typedef struct s_mlx_info
 {
 	void				*mlx;
@@ -103,13 +112,17 @@ typedef struct s_mlx_info
 	pthread_t			*threads;
 	t_thread_arg		*t_args;
 	int					thread_count;
+	bool				julia_toggle;
 	float				julia_pos[2];
+
 	long double			pos[2];
 	long double			zoom;
+	float				zoom_acc;
 	long double			target_zoom;
 	float				img_zoom;
 	bool				anim_toggle;
 	int					action;
+	int					color_offset;
 }	t_mlx_info;
 
 int				get_pixel_color(float z);

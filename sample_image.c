@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 16:48:06 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/15 14:12:49 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/16 16:18:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	set_img_pixel(t_image_info img, int x, int y, unsigned int color)
 {
 	x = x * sizeof(int); //TODO: bpp * sizeof char?
 	y = y * img.size_line;
-	*(unsigned int *)(img.addr + x + y) = color;
+	*(unsigned int *)(img.addr + x + y) = color & 0xFFFFFF16;
 }
 
 unsigned int	get_img_pixel(t_image_info img, int x, int y)
@@ -47,7 +47,7 @@ void	sample_image(t_mlx_info *info)
 		while (crd[X] < info->img->size[X])
 		{
 			scaled_crd[X] =  (crd[X] - offset) / info->img_zoom;
-			set_img_pixel(*info->img, crd[X], crd[Y], get_img_pixel(info->img[1], scaled_crd[X], scaled_crd[Y]));
+			set_img_pixel(*info->img, crd[X], crd[Y], get_img_pixel(info->img[1], scaled_crd[X], scaled_crd[Y]) + info->color_offset);
 			if (scaled_crd[X] == info->img[1].size[X] / 2 && scaled_crd[Y] == info->img[1].size[Y] / 2)
 				set_img_pixel(*info->img, crd[X], crd[Y], INT_MAX);
 			crd[X]++;
