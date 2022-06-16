@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 01:02:17 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 01:15:47 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static void	allocate_thread_value(t_thread_arg *arg, t_mlx_info *info,
 	arg->img_zoom = &info->img_zoom;
 	arg->fptr = info->fptr;
 	ft_memcpy(arg->pos, info->pos, sizeof (long double [2]));
-	arg->local_img = ft_memalloc(sizeof(t_image_info));
+	arg->local_img = ft_memalloc(sizeof(t_image_info)); //TODO: PROTECT!
 	ft_memcpy(arg->local_img, &info->img[1], sizeof(t_image_info));
 	arg->local_img->addr = ft_memalloc(sizeof(int)
 			* info->img[1].size[X] * info->img[1].size[Y]);
