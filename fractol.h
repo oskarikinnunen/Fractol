@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/16 16:13:34 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 00:47:33 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <stdio.h>
 
 # define WSZ 512
-# define MAX_ITERS 140
+# define MAX_ITERS 200
 # define ZOOM_LIMIT 112589990684262400.000000
 # define ZOOM_DECELERATION 0.82
 # define FALSE 0
@@ -61,6 +61,8 @@
 # define ACTION_ZOOM_OUT 1
 # define ACTION_CLICK 2
 
+# define USAGE_MSG "Usage: fractol [julia/mandelbrot/ship] \nUse Arrow keys/Z/X to control the colors, mouse to move\n"
+
 
 typedef struct s_complex
 {
@@ -88,6 +90,7 @@ typedef struct s_thread_arg
 {
 	t_image_info		*img;
 	t_image_info		*local_img;
+	int					(*fptr)(long double *);
 	int					startpixel;
 	long double			pixelcrd[2];
 	_Bool				finished;
@@ -104,6 +107,15 @@ typedef struct s_julia
 
 }	t_julia;
 
+typedef enum
+{
+	vanilla,
+	blackandwhite,
+	sine1,
+	sine2,
+	greenhell
+}	e_colormode;
+
 typedef struct s_mlx_info
 {
 	void				*mlx;
@@ -113,26 +125,47 @@ typedef struct s_mlx_info
 	t_thread_arg		*t_args;
 	int					thread_count;
 	bool				julia_toggle;
+	e_colormode			colormode;
+	int					color_bit_offset;
+	float				color_add;
+	int					(*fptr)(long double *);
 	float				julia_pos[2];
-
 	long double			pos[2];
 	long double			zoom;
 	float				zoom_acc;
-	long double			target_zoom;
 	float				img_zoom;
-	bool				anim_toggle;
 	int					action;
-	int					color_offset;
 }	t_mlx_info;
 
 int				get_pixel_color(float z);
 void			populate_threadinfo(t_mlx_info *info);
 void			set_t_arg_finished(t_mlx_info info, _Bool b);
+
+/* thread_helpers.c */
 int				thread_done(t_mlx_info info);
+double			time_elapsed(struct timeval t1);
+void			cpy_thread_local_image(t_mlx_info info, int action);
+void			set_fractal_pixel(long double *crd, t_thread_arg *arg);
+void			update_t_args(t_mlx_info info);
+
+
 void			update_t_args(t_mlx_info info);
 void			mt_draw(t_mlx_info info, int zoom_in);
 void			sample_image(t_mlx_info *info);
 unsigned int	get_img_pixel(t_image_info img, int x, int y);
 void			set_img_pixel(t_image_info img, int x, int y, unsigned int color);
+
+/* loops.c */
+int	key_loop(int keycode, void *p);
+int	mouse_hook(int button, int x, int y, void *p);
+int	loop(void *p);
+
+/* Fractals.c */
+int		ship(long double *arg);
+int		julia(long double *arg);
+int		mandelbrot(long double *arg);
+
+
+int		evaluate_arg(char *arg, t_mlx_info *info);
 
 # endif
