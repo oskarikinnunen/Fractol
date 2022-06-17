@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 11:09:42 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 11:19:34 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ typedef struct s_julia
 }	t_julia;
 
 //Should be e_colormode but norminette is dumb
-typedef enum s_colormode
+typedef enum e_colormode
 {
 	vanilla,
 	blackandwhite,
