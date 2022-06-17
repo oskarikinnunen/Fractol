@@ -6,7 +6,7 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/11 17:57:56 by okinnune          #+#    #+#              #
-#    Updated: 2022/06/15 13:50:33 by okinnune         ###   ########.fr        #
+#    Updated: 2022/06/17 10:54:14 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ FILES= ft_abs.c ft_atoi.c ft_bzero.c ft_digitcount.c ft_isalnum.c ft_isalpha.c\
 	ft_ftoa.c ft_memdup.c ft_clamp.c ft_clampf.c ft_min_max.c \
 	ft_get_next_line.c ft_strscrape.c \
 	g_colorlerp.c
-FLAGS= -Wall -Wextra -Werror -O3 -c
+FLAGS= -Wall -Wextra -Werror -O2 -c
 SRCS= $(addprefix src/, $(FILES))
 #SRCS+=$(V_SRCS)
 OBJS= $(FILES:.c=.o)
