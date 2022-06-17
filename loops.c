@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:58:16 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 01:03:52 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 10:28:05 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ static void	update_julia_cursor(t_mlx_info *info)
 	if (info->julia_toggle)
 	{
 		ft_bzero(mouse, sizeof(int [2]));
-		//mlx_mouse_get_pos(info->win, &mouse[X], &mouse[Y]);
-		
+		mlx_mouse_get_pos(info->win, &mouse[X], &mouse[Y]);
 		info->julia_pos[X] = (float)mouse[X] * 2 / (float)WSZ;
 		info->julia_pos[Y] = (float)mouse[Y] * 2 / (float)WSZ;
 		info->action = ACTION_CLICK;
@@ -36,7 +35,7 @@ int	loop(void *p)
 	update_julia_cursor(info);
 	info->img_zoom += info->zoom_acc;
 	info->zoom_acc *= (info->zoom_acc >= 0.02) * ZOOM_DECELERATION;
-	if (info->img_zoom > 1.5 && thread_done(*info))
+	if (info->img_zoom > 1.5 && threads_done(*info))
 	{
 		info->zoom *= 2.0;
 		info->pos[X] += (WSZ / 2) / info->zoom;
@@ -45,7 +44,7 @@ int	loop(void *p)
 		info->action = ACTION_ZOOM_IN;
 	}
 	update_t_args(*info);
-	if (!thread_done(*info))
+	if (!threads_done(*info))
 		mt_draw(*info, info->action);
 	sample_image(info);
 	mlx_put_image_to_window(info->mlx, info->win, info->img->ptr, 0, 0);
@@ -86,7 +85,7 @@ int	mouse_hook(int button, int x, int y, void *p)
 	if (button == SCRL_DOWN)
 	{
 		info->img_zoom = ft_clampf(info->img_zoom - 0.25, 0.5, 1.5);
-		if (info->img_zoom <= 0.5 && info->zoom > 20 && thread_done(*info))
+		if (info->img_zoom <= 0.5 && info->zoom > 20 && threads_done(*info))
 		{
 			info->pos[X] -= (WSZ / 2) / (info->zoom);
 			info->pos[Y] -= (WSZ / 2) / (info->zoom);
@@ -96,7 +95,7 @@ int	mouse_hook(int button, int x, int y, void *p)
 		}
 	}
 	info->zoom_acc += 0.025 * (button == SCRL_UP && info->zoom < ZOOM_LIMIT);
-	if (button == 1 && thread_done(*info))
+	if (button == 1 && threads_done(*info))
 	{
 		info->pos[X] += ((x - (WSZ / 2)) / info->zoom) / info->img_zoom;
 		info->pos[Y] += ((y - (WSZ / 2)) / info->zoom) / info->img_zoom;

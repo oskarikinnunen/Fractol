@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:26:44 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 01:01:11 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 10:23:48 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@ static void	start_mlx(t_mlx_info *info)
 	info->win = mlx_new_window(info->mlx, WSZ, WSZ, "new_window");
 	info->img->ptr = mlx_new_image(info->mlx, WSZ, WSZ);
 	info->img->addr = mlx_get_data_addr(info->img->ptr,
-			(int *)&(info->img->bpp),
-			(int *)&(info->img->size_line), &(info->img->endian));
+			&(info->img->bpp),
+			&(info->img->size_line), &(info->img->endian));
 	ft_memcpy(info->img->size, (int [2]){WSZ, WSZ}, sizeof (int [2]));
 	ft_memcpy(&info->img[1], &info->img[0], sizeof(t_image_info));
 	ft_memcpy(info->img[1].size, (int [2]){WSZ * 2, WSZ * 2}, sizeof (int [2]));
 	info->img[1].size_line *= 2;
 	info->img[1].addr = ft_memalloc(info->img[1].size_line * WSZ * 4);
+	if (info->img[1].addr == NULL)
+		error_exit();
 	info->zoom = 50.0;
 	info->img_zoom = 1.51;
 	info->pos[X] -= WSZ / 2 / info->zoom;

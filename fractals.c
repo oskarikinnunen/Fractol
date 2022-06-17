@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:36:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 01:02:59 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 09:52:01 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ int	julia(long double *arg)
 		arg[Y] = 2 * f.real * f.imaginary + (float)arg[3];
 		color++;
 	}
+	if (color == MAX_ITERS)
+		return (0);
 	return (color * ((INT_MAX * 0.75) / MAX_ITERS));
 }
 
@@ -72,5 +74,7 @@ int	ship(long double *arg)
 		f.imaginary = ft_absd(f.imaginary);
 		color++;
 	}
+	if (color == MAX_ITERS)
+		return (0);
 	return (color * ((INT_MAX * 0.75) / MAX_ITERS));
 }

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 16:48:06 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 00:57:16 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 10:18:46 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,17 @@ void	set_img_pixel(t_image_info img, int x, int y, unsigned int color)
 {
 	x = x * sizeof(int);
 	y = y * img.size_line;
-	*(unsigned int *)(img.addr + x + y) = color;
+	if (x + y < img.size[Y] * img.size_line)
+		*(unsigned int *)(img.addr + x + y) = color;
 }
 
 unsigned int	get_img_pixel(t_image_info img, int x, int y)
 {
 	x = x * sizeof(int);
 	y = y * img.size_line;
-	return (*(unsigned int *)(img.addr + x + y));
+	if (x + y < img.size[Y] * img.size_line)
+		return (*(unsigned int *)(img.addr + x + y));
+	return (0);
 }
 
 int	pixel_index(int x, int y, int line_width)
@@ -35,7 +38,7 @@ int	calculate_color(t_mlx_info info, int *crd, int color_offset)
 {
 	if (info.colormode == greenhell)
 		return ((get_img_pixel(info.img[1], crd[X], crd[Y])
-				+ color_offset) & 0xFFFFF16);
+				+ color_offset * 10) & 0xFFFFF16);
 	if (info.colormode == blackandwhite)
 		return ((get_img_pixel(info.img[1], crd[X], crd[Y]) & 255)
 			+ ((get_img_pixel(info.img[1], crd[X], crd[Y]) & 255) << 8)

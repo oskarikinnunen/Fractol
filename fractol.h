@@ -6,22 +6,17 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 00:47:33 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 10:25:51 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FRACTOL_H
 # define FRACTOL_H
 
-//# include <X11/X.h>
-# include "mlx/OS_X/mlx.h"
 # include <math.h>
 # include "libft.h"
 # include <pthread.h>
 # include <sys/time.h>
-
-//REMOVE
-# include <stdio.h>
 
 # define WSZ 512
 # define MAX_ITERS 200
@@ -35,6 +30,7 @@
 
 /*	KEYCODES */
 # ifdef __APPLE__
+#  include "mlx/OS_X/mlx.h"
 #  define KEY_LEFT 123
 #  define KEY_RGHT 124
 #  define KEY_DOWN 125
@@ -45,6 +41,7 @@
 #  define KEY_ESC 53
 # else
 /* ASSUMED LINUX */
+#  include "mlx/Linux/mlx.h"
 #  define KEY_LEFT 65361
 #  define KEY_RGHT 65363
 #  define KEY_DOWN 65364
@@ -61,8 +58,8 @@
 # define ACTION_ZOOM_OUT 1
 # define ACTION_CLICK 2
 
-# define USAGE_MSG "Usage: fractol [julia/mandelbrot/ship] \nUse Arrow keys/Z/X to control the colors, mouse to move\n"
-
+# define USAGE_MSG "Usage: fractol [julia/mandelbrot/ship] \n\
+	Use Arrow keys/Z/X to control the colors, mouse to move\n"
 
 typedef struct s_complex
 {
@@ -80,12 +77,6 @@ typedef struct s_image_info
 	int		size[2];
 }	t_image_info;
 
-//Threads populate the fake image, which then gets sample with pos and zoom to the "real image"
-
-//TODO: draw zoom image target on screen as a square, redraw the actual 2x image once we reach that
-//2 zoom variables, one for the actual mandelbrot zoom and one for the "digital" zoom that we do on the copy image
-
-// Full size image, actually sampled image, and the blurry copy
 typedef struct s_thread_arg
 {
 	t_image_info		*img;
@@ -98,7 +89,7 @@ typedef struct s_thread_arg
 	float				*img_zoom;
 	float				julia_pos[2];
 	long double			zoom;
-	long double 		pos[2];
+	long double			pos[2];
 }	t_thread_arg;
 
 typedef struct s_julia
@@ -107,14 +98,15 @@ typedef struct s_julia
 
 }	t_julia;
 
-typedef enum
+//Should be e_colormode but norminette is dumb
+typedef enum s_colormode
 {
 	vanilla,
 	blackandwhite,
 	sine1,
 	sine2,
 	greenhell
-}	e_colormode;
+}	t_colormode;
 
 typedef struct s_mlx_info
 {
@@ -124,8 +116,8 @@ typedef struct s_mlx_info
 	pthread_t			*threads;
 	t_thread_arg		*t_args;
 	int					thread_count;
-	bool				julia_toggle;
-	e_colormode			colormode;
+	_Bool				julia_toggle;
+	t_colormode			colormode;
 	int					color_bit_offset;
 	float				color_add;
 	int					(*fptr)(long double *);
@@ -137,35 +129,37 @@ typedef struct s_mlx_info
 	int					action;
 }	t_mlx_info;
 
-int				get_pixel_color(float z);
-void			populate_threadinfo(t_mlx_info *info);
-void			set_t_arg_finished(t_mlx_info info, _Bool b);
-
 /* thread_helpers.c */
-int				thread_done(t_mlx_info info);
+int				threads_done(t_mlx_info info);
 double			time_elapsed(struct timeval t1);
 void			cpy_thread_local_image(t_mlx_info info, int action);
 void			set_fractal_pixel(long double *crd, t_thread_arg *arg);
 void			update_t_args(t_mlx_info info);
 
-
+/* threading.c */
 void			update_t_args(t_mlx_info info);
 void			mt_draw(t_mlx_info info, int zoom_in);
+void			populate_threadinfo(t_mlx_info *info);
+void			set_t_arg_finished(t_mlx_info info, _Bool b);
+
+/* sample_image.c */
 void			sample_image(t_mlx_info *info);
 unsigned int	get_img_pixel(t_image_info img, int x, int y);
-void			set_img_pixel(t_image_info img, int x, int y, unsigned int color);
+void			set_img_pixel(t_image_info img, int x, int y,
+					unsigned int color);
 
 /* loops.c */
-int	key_loop(int keycode, void *p);
-int	mouse_hook(int button, int x, int y, void *p);
-int	loop(void *p);
+int				key_loop(int keycode, void *p);
+int				mouse_hook(int button, int x, int y, void *p);
+int				loop(void *p);
 
-/* Fractals.c */
-int		ship(long double *arg);
-int		julia(long double *arg);
-int		mandelbrot(long double *arg);
+/* fractals.c */
+int				ship(long double *arg);
+int				julia(long double *arg);
+int				mandelbrot(long double *arg);
 
+/* evaluate_arg.c */
+void			error_exit(void);
+int				evaluate_arg(char *arg, t_mlx_info *info);
 
-int		evaluate_arg(char *arg, t_mlx_info *info);
-
-# endif
+#endif

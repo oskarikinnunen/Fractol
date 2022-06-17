@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:57:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 01:15:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 09:57:32 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	cpy_thread_local_image(t_mlx_info info, int action)
 	t_thread_arg	arg;
 
 	arg = info.t_args[0];
-	if (thread_done(info))
+	if (threads_done(info))
 	{
 		t_i = 0;
 		while (t_i < info.thread_count)
@@ -58,7 +58,7 @@ void	cpy_thread_local_image(t_mlx_info info, int action)
 	}
 }
 
-int	thread_done(t_mlx_info info)
+int	threads_done(t_mlx_info info)
 {
 	int		i;
 	_Bool	result;
