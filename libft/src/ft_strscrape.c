@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/05 13:51:35 by okinnune          #+#    #+#             */
-/*   Updated: 2022/04/20 09:54:07 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 11:15:20 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ char	**ft_strscrape(const char *s, char *delims)
 	int		wc;
 
 	wc = wordcount((char *)s, delims);
-	
 	arr = (char **)malloc(sizeof(char *) * wc + 1);
 	if (!arr)
 		return (NULL);

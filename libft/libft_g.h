@@ -6,12 +6,12 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 17:09:59 by okinnune          #+#    #+#             */
-/*   Updated: 2022/04/20 17:10:21 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 11:16:43 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef LIBFT_G
-# define LIBFT_G
+#ifndef LIBFT_G_H
+# define LIBFT_G_H
 
 int	g_colorlerp(int color1, int color2, float lerp);
 
