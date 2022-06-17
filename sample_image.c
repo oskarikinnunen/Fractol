@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/12 16:48:06 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 10:18:46 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 10:41:41 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	calculate_color(t_mlx_info info, int *crd, int color_offset)
 {
 	if (info.colormode == greenhell)
 		return ((get_img_pixel(info.img[1], crd[X], crd[Y])
-				+ color_offset * 10) & 0xFFFFF16);
+				+ color_offset * 10) & 0xFFFFFF16);
 	if (info.colormode == blackandwhite)
 		return ((get_img_pixel(info.img[1], crd[X], crd[Y]) & 255)
 			+ ((get_img_pixel(info.img[1], crd[X], crd[Y]) & 255) << 8)

@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/16 23:36:12 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 09:52:01 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 10:44:36 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	julia(long double *arg)
 	}
 	if (color == MAX_ITERS)
 		return (0);
-	return (color * ((INT_MAX * 0.75) / MAX_ITERS));
+	return (color * ((0xFFFFFF16) / MAX_ITERS));
 }
 
 /*
@@ -54,7 +54,7 @@ int	mandelbrot(long double *arg)
 	}
 	if (color == MAX_ITERS)
 		return (0);
-	return ((int)(color * ((INT_MAX * 0.75) / MAX_ITERS)));
+	return ((int)(color * (0xFFFFFF16) / MAX_ITERS));
 }
 
 int	ship(long double *arg)
@@ -76,5 +76,5 @@ int	ship(long double *arg)
 	}
 	if (color == MAX_ITERS)
 		return (0);
-	return (color * ((INT_MAX * 0.75) / MAX_ITERS));
+	return (color * ((0xFFFFFF16) / MAX_ITERS));
 }

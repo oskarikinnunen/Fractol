@@ -8,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This program built for i386-apple-darwin11.3.0
  
 
-# Make data base, printed on Fri Jun 17 10:33:18 2022
+# Make data base, printed on Fri Jun 17 10:41:36 2022
 
 # Variables
 
@@ -32,16 +32,17 @@ SHELL = /bin/sh
 VSCODE_NLS_CONFIG = {"locale":"en-us","availableLanguages":{},"_languagePackSupport":true}
 # environment
 _ = /usr/bin/make
-# makefile (from `Makefile', line 19)
+# makefile (from `Makefile', line 20)
 CFLAGS = -pthread -Wall -Werror -Wextra -O2 
 # makefile (from `Makefile', line 1)
 MAKEFILE_LIST :=  Makefile
 # environment
 VSCODE_VERBOSE_LOGGING = true
-# makefile (from `Makefile', line 16)
+# makefile (from `Makefile', line 17)
 OBJS = $(SRCS:.c=.o)
 # environment
 VSCODE_IPC_HOOK_EXTHOST = /var/folders/zz/zyxvpxvq6csfxvn_n0000kmr0004n6/T/vscode-ipc-6d720f3c-2182-4e42-9af5-71d5e8b278b7.sock
+ 
 # environment
 VSCODE_CWD = /
 # environment
@@ -52,8 +53,7 @@ PATH = /Users/okinnune/.brew/bin:/Users/okinnune/.brew/bin:/usr/local/bin:/usr/b
 VSCODE_LOG_STACK = false
 # environment
 ELECTRON_RUN_AS_NODE = 1
- 
-# makefile (from `Makefile', line 23)
+# makefile (from `Makefile', line 24)
 MLIB = libmlx.dylib
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
@@ -61,7 +61,7 @@ MLIB = libmlx.dylib
 SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.r1RRN558H6/Listeners
 # automatic
 %F = $(notdir $%)
-# makefile (from `Makefile', line 22)
+# makefile (from `Makefile', line 23)
 MLXFLAGS = libmlx.dylib
 # environment
 VSCODE_PIPE_LOGGING = true
@@ -97,11 +97,11 @@ MAKECMDGOALS := all
 SRCS = main.c threading.c sample_image.c evaluate_arg.c fractals.c loops.c thread_helpers.c
 # environment
 SHLVL = 1
-# makefile (from `Makefile', line 17)
-LIBFT = libft/libft.a
 # makefile (from `Makefile', line 18)
+LIBFT = libft/libft.a
+# makefile (from `Makefile', line 19)
 CC = gcc -Ilibft
-# makefile (from `Makefile', line 20)
+# makefile (from `Makefile', line 21)
 UNAME = $(shell uname)
 # default
 MAKE_VERSION := 3.81
@@ -180,7 +180,7 @@ fractol: main.o threading.o sample_image.o evaluate_arg.o fractals.o loops.o thr
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 39):
+#  commands to execute (from `Makefile', line 40):
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT) $(MLIB) $(MLXFLAGS)
 	
 
@@ -221,7 +221,7 @@ all:
 # ? := 
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=2/16=12%
-#  commands to execute (from `Makefile', line 35):
+#  commands to execute (from `Makefile', line 36):
 	@echo "Compiling for platform: $(UNAME)."
 	$(MAKE) $(NAME)
 	
@@ -241,7 +241,8 @@ evaluate_arg.o:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-17 10:33:00
+#  Last modified 2022-06-17 10:38:28
+ 
 #  File has been updated.
 #  Successfully updated.
 # variable set hash-table stats:
@@ -251,7 +252,7 @@ mlx/Linux/libmlx.a:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 49):
+#  commands to execute (from `Makefile', line 50):
 	make -C mlx/Linux
 	
 
@@ -259,7 +260,7 @@ libft/libft.a:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 42):
+#  commands to execute (from `Makefile', line 43):
 	make -C libft
 	
 
@@ -267,7 +268,7 @@ fclean: clean
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 58):
+#  commands to execute (from `Makefile', line 59):
 	rm -f libmlx.dylib
 	rm -rf *.dSYM
 	rm -f $(NAME)
@@ -289,7 +290,7 @@ libmlx.dylib:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 45):
+#  commands to execute (from `Makefile', line 46):
 	make -C mlx/OS_X
 	mv mlx/OS_X/libmlx.dylib libmlx.dylib
 	
@@ -303,7 +304,7 @@ clean:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
-#  commands to execute (from `Makefile', line 52):
+#  commands to execute (from `Makefile', line 53):
 	make -C libft clean
 	#make -C mlx/OS_X clean
 	#make -C mlx/Linux clean
@@ -341,6 +342,6 @@ sample_image.o:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Fri Jun 17 10:33:18 2022
+# Finished Make data base on Fri Jun 17 10:41:36 2022
 
  

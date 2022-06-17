@@ -6,13 +6,14 @@
 #    By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/04/20 12:28:43 by okinnune          #+#    #+#              #
-#    Updated: 2022/06/17 10:33:00 by okinnune         ###   ########.fr        #
+#    Updated: 2022/06/17 10:47:59 by okinnune         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fractol
 
-SRCS = main.c threading.c sample_image.c evaluate_arg.c fractals.c loops.c thread_helpers.c
+SRCS = main.c threading.c sample_image.c evaluate_arg.c \
+		fractals.c loops.c thread_helpers.c
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
 CC = gcc -Ilibft
