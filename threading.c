@@ -6,13 +6,11 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/05 15:08:30 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 10:34:51 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 10:35:26 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fractol.h"
-
-//TODO: Protec
 
 static void	allocate_thread_value(t_thread_arg *arg, t_mlx_info *info,
 	int pixels[2])
