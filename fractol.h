@@ -6,7 +6,7 @@
 /*   By: okinnune <okinnune@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/20 12:08:57 by okinnune          #+#    #+#             */
-/*   Updated: 2022/06/17 10:49:37 by okinnune         ###   ########.fr       */
+/*   Updated: 2022/06/17 11:09:42 by okinnune         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # include <sys/time.h>
 
 # define WSZ 512
-# define MAX_ITERS 200
+# define MAX_ITERS 220
 # define ZOOM_LIMIT 112589990684262400.000000
 # define ZOOM_DECELERATION 0.82
 # define FALSE 0
